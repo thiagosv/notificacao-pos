@@ -52,6 +52,10 @@ spring:
             - Path=/api/quotas/**
           filters:
             - RewritePath=/api/quotas/(?<segment>.*), /${segment}
+            - name: CircuitBreaker
+              args:
+                name: quotaCircuitBreaker
+                fallbackUri: forward:/fallback/quota
 
       # Global CORS Configuration
       globalcors:

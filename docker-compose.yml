@@ -168,3 +168,33 @@ services:
       retries: 3
       start_period: 40s
     restart: unless-stopped
+
+  quota-service:
+    build:
+      context: .
+      dockerfile: services/quota-service/Dockerfile
+    container_name: notification-quota-service
+    environment:
+      SERVER_PORT: 8080
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      POSTGRESQL_HOST: postgres
+      POSTGRESQL_USER: notification
+      POSTGRESQL_PASS: notification123
+      KAFKA_BOOTSTRAP: kafka:9092
+    networks:
+      - notification-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8083/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped

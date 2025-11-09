@@ -9,7 +9,7 @@ spring:
       routes:
         # Notification Core Service
         - id: notification-service
-          uri: http://notification-core:8082
+          uri: http://notification-core:8080
           predicates:
             - Path=/api/notifications/**
           filters:
@@ -21,7 +21,7 @@ spring:
 
         # Quota Service
         - id: quota-service
-          uri: http://quota-service:8083
+          uri: http://quota-service:8080
           predicates:
             - Path=/api/quotas/**
           filters:
