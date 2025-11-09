@@ -1,0 +1,196 @@
+server:
+  port: 8081
+  shutdown: graceful  # Graceful shutdown
+
+spring:
+  application:
+    name: api-gateway
+
+  lifecycle:
+    timeout-per-shutdown-phase: 30s  # Tempo para shutdown gracioso
+
+  # Redis Configuration
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 2000ms
+      connect-timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+
+  # Cloud Gateway Configuration
+  cloud:
+    gateway:
+      httpclient:
+        connect-timeout: 1000
+        response-timeout: 5s
+        pool:
+          type: elastic
+          max-connections: 100
+
+      routes:
+        # Notification Core Service
+        - id: notification-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/notifications/**
+          filters:
+            - RewritePath=/api/notifications/(?<segment>.*), /${segment}
+            - name: CircuitBreaker
+              args:
+                name: notificationCircuitBreaker
+                fallbackUri: forward:/fallback/notification
+
+        # Quota Service
+        - id: quota-service
+          uri: http://localhost:8083
+          predicates:
+            - Path=/api/quotas/**
+          filters:
+            - RewritePath=/api/quotas/(?<segment>.*), /${segment}
+
+      # Global CORS Configuration
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            exposedHeaders:
+              - Authorization
+            maxAge: 3600
+
+      # Default Filters
+      default-filters:
+        - name: Retry
+          args:
+            retries: 3
+            statuses: BAD_GATEWAY,GATEWAY_TIMEOUT
+            methods: GET,POST
+            backoff:
+              firstBackoff: 50ms
+              maxBackoff: 500ms
+              factor: 2
+        - name: RequestRateLimiter
+          args:
+            redis-rate-limiter:
+              replenishRate: 100
+              burstCapacity: 200
+              requestedTokens: 1
+
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET:c3VwZXItc2VjcmV0LWtleS1mb3Itbm90aWZpY2F0aW9uLXN5c3RlbS1kZXZlbG9wbWVudC0yMDI0}
+  expiration: 3600000 # 1 hour in milliseconds
+  issuer: notification-system
+  audience: notification-clients
+
+# Resilience4j Configuration
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        registerHealthIndicator: true  # ✅ Importante!
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 30s
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 10
+        recordExceptions:
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+          - org.springframework.web.client.ResourceAccessException
+          - java.net.ConnectException
+    instances:
+      notificationCircuitBreaker:
+        baseConfig: default
+        registerHealthIndicator: true  # ✅ Explícito também!
+      quotaCircuitBreaker:
+        baseConfig: default
+        registerHealthIndicator: true  # ✅ Para o serviço de quota
+
+  timelimiter:
+    configs:
+      default:
+        timeoutDuration: 5s
+    instances:
+      notificationCircuitBreaker:
+        timeoutDuration: 5s
+      quotaCircuitBreaker:
+        timeoutDuration: 5s
+
+# Management Endpoints - ATUALIZAR
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,gateway,circuitbreakers
+      base-path: /actuator
+
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+      probes:
+        enabled: true
+    gateway:
+      enabled: true
+    circuitbreakers:
+      enabled: true
+
+  health:
+    circuitbreakers:
+      enabled: true
+    defaults:
+      enabled: true
+
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    tags:
+      application: ${spring.application.name}
+    distribution:
+      percentiles-histogram:
+        resilience4j.circuitbreaker.calls: true
+
+  tracing:
+    sampling:
+      probability: 1.0
+
+  observations:
+    key-values:
+      application: ${spring.application.name}
+
+# Logging
+logging:
+  level:
+    root: INFO
+    com.notification.gateway: DEBUG
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.security: DEBUG
+    io.github.resilience4j: DEBUG
+    io.micrometer: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    dateformat: yyyy-MM-dd HH:mm:ss
+
+# SpringDoc OpenAPI
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+
