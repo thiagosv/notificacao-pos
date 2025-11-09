@@ -139,3 +139,32 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+    # ==========================================
+    # MICROSSERVIÇOS
+    # ==========================================
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: services/api-gateway/Dockerfile
+    container_name: notification-api-gateway
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      JWT_SECRET: c3VwZXItc2VjcmV0LWtleS1mb3Itbm90aWZpY2F0aW9uLXN5c3RlbS1kZXZlbG9wbWVudC0yMDI0
+    networks:
+      - notification-network
+    depends_on:
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8081/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
