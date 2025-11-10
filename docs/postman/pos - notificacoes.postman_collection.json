@@ -1,0 +1,307 @@
+{
+	"info": {
+		"_postman_id": "ed68e903-959b-4a17-9cba-aeca71b4ef27",
+		"name": "pos - notificacoes",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3777837"
+	},
+	"item": [
+		{
+			"name": "Gateway",
+			"item": [
+				{
+					"name": "Token",
+					"item": [
+						{
+							"name": "Auth - Login",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"clientId\": \"demo-client\",\n    \"password\": \"demo123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8081/api/auth/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"api",
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Auth - Validate",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzUxMiJ9.eyJzY29wZXMiOlsibm90aWZpY2F0aW9uOnNlbmQiLCJxdW90YTpyZWFkIl0sImNsaWVudElkIjoiZGVtby1jbGllbnQiLCJzdWIiOiJkZW1vLWNsaWVudCIsImlzcyI6Im5vdGlmaWNhdGlvbi1zeXN0ZW0iLCJhdWQiOlsibm90aWZpY2F0aW9uLWNsaWVudHMiXSwiaWF0IjoxNzYyNzEyMjQ0LCJleHAiOjE3NjI3MTU4NDR9._sAU11X0zgME7xI9zg9OWnbXCtaDpssvJYK9JkdnJDmhTPRHmA-lNVdyvXZFHGFB21g2LJFyd93QLAnUAaD_Fg",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8081/api/auth/validate",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"api",
+										"auth",
+										"validate"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Health",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8081/actuator/health",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"actuator",
+										"health"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Test - Authenticated",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzUxMiJ9.eyJzY29wZXMiOlsibm90aWZpY2F0aW9uOnNlbmQiLCJxdW90YTpyZWFkIl0sImNsaWVudElkIjoiZGVtby1jbGllbnQiLCJzdWIiOiJkZW1vLWNsaWVudCIsImlzcyI6Im5vdGlmaWNhdGlvbi1zeXN0ZW0iLCJhdWQiOlsibm90aWZpY2F0aW9uLWNsaWVudHMiXSwiaWF0IjoxNzYyNzA5OTkwLCJleHAiOjE3NjI3MTM1OTB9.4DmsokWrp_DD6nkBngxtft2ozdCHsFjmNS4LbsZ-wzG8koxPydpkSFF0LVgH7jhHr7k0RxO2SMJhQKmUoKnPPQ",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8081/api/test/authenticated",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"api",
+										"test",
+										"authenticated"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "apis",
+					"item": []
+				}
+			]
+		},
+		{
+			"name": "Quotas",
+			"item": [
+				{
+					"name": "uso",
+					"item": [
+						{
+							"name": "Detalhes",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8083/quotas/:clientId",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8083",
+									"path": [
+										"quotas",
+										":clientId"
+									],
+									"variable": [
+										{
+											"key": "clientId",
+											"value": "demo-client"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "admin",
+					"item": [
+						{
+							"name": "Cria",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"clientId\": \"demo-client-2\",\r\n    \"channel\": \"EMAIL\",\r\n    \"totalQuota\": 200\r\n  }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8083/admin/quotas",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8083",
+									"path": [
+										"admin",
+										"quotas"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8083/actuator/health",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"actuator",
+								"health"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{access_token}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {},
+						"exec": [
+							"pm.sendRequest({\r",
+							"    url: 'http://localhost:8081/api/auth/login',\r",
+							"    method: 'POST',\r",
+							"    header: 'Content-Type: application/json',\r",
+							"    body: {\r",
+							"        mode: 'raw',\r",
+							"        raw: JSON.stringify({ clientId: 'demo-client', password: 'demo123' })\r",
+							"    }\r",
+							"}, function (err, response) {\r",
+							"    if (err) {\r",
+							"        console.error(err);\r",
+							"    } else {\r",
+							"        if (response.code === 200) {\r",
+							"            var responseBody = response.json();\r",
+							"            pm.collectionVariables.set('access_token', responseBody.token);\r",
+							"        } else {\r",
+							"            console.error('Failed to login. Response code:', response.code);\r",
+							"        }\r",
+							"    }\r",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "access_token",
+			"value": ""
+		},
+		{
+			"key": "quota_host",
+			"value": "",
+			"type": "default"
+		}
+	]
+}
