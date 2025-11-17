@@ -1,0 +1,19 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/push/send"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "success": true,
+      "messageId": "push-{{randomValue type='UUID'}}",
+      "timestamp": "{{now format='yyyy-MM-dd HH:mm:ss'}}"
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "transformers": ["response-template"],
+    "fixedDelayMilliseconds": 500
+  }
+}

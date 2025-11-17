@@ -35,6 +35,8 @@
     <modules>
         <module>services/api-gateway</module>
         <module>services/quota-service</module>
+        <module>services/notification-core</module>
+        <module>services/provider-push</module>
     </modules>
 
     <dependencyManagement>
