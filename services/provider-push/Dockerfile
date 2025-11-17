@@ -11,7 +11,7 @@ FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
 # Copy the built artifact
-COPY --from=build /build/services/quota-service/target/quota-service-*.jar app.jar
+COPY --from=build /build/services/provider-push/target/provider-push-*.jar app.jar
 
 # Add a non-root user for security
 RUN addgroup -S spring && adduser -S spring -G spring
@@ -22,3 +22,4 @@ EXPOSE 8080
 
 # Run the application
 ENTRYPOINT ["java", "-jar", "app.jar", "--spring.profiles.active=docker"]
+

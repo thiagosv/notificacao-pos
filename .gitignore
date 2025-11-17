@@ -1,0 +1,4 @@
+/services/api-gateway/target/
+/services/notification-core/target/
+/services/quota-service/target/
+/.idea/
