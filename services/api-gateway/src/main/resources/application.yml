@@ -12,8 +12,8 @@ spring:
   # Redis Configuration
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
       timeout: 2000ms
       connect-timeout: 2000ms
       lettuce:
@@ -35,7 +35,7 @@ spring:
       routes:
         # Notification Core Service
         - id: notification-service
-          uri: http://localhost:8082
+          uri: ${NOTIFICATION_SERVICE_URI:http://localhost:8082}
           predicates:
             - Path=/api/notifications/**
           filters:
@@ -43,11 +43,11 @@ spring:
             - name: CircuitBreaker
               args:
                 name: notificationCircuitBreaker
-                fallbackUri: forward:/fallback/notification
+                fallbackUri: forward:/fallback/notifications
 
         # Quota Service
         - id: quota-service
-          uri: http://localhost:8083
+          uri: ${QUOTA_SERVICE_URI:http://localhost:8080}
           predicates:
             - Path=/api/quotas/**
           filters:
@@ -55,7 +55,7 @@ spring:
             - name: CircuitBreaker
               args:
                 name: quotaCircuitBreaker
-                fallbackUri: forward:/fallback/quota
+                fallbackUri: forward:/fallback/quotas
 
       # Global CORS Configuration
       globalcors:
