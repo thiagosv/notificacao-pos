@@ -2,3 +2,5 @@
 /services/notification-core/target/
 /services/quota-service/target/
 /.idea/
+/services/provider-push/target/
+/services/provider-email/target/
