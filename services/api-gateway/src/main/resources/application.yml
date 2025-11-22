@@ -18,7 +18,7 @@ spring:
       connect-timeout: 2000ms
       lettuce:
         pool:
-          max-active: 8
+          max-active: 20
           max-idle: 8
           min-idle: 0
 
@@ -30,7 +30,8 @@ spring:
         response-timeout: 5s
         pool:
           type: elastic
-          max-connections: 100
+          max-connections: 200
+          max-connections-per-route: 50
 
       routes:
         # Notification Core Service
@@ -103,8 +104,8 @@ resilience4j:
   circuitbreaker:
     configs:
       default:
-        registerHealthIndicator: true  # ✅ Importante!
-        slidingWindowSize: 10
+        registerHealthIndicator: true
+        slidingWindowSize: 40
         minimumNumberOfCalls: 5
         permittedNumberOfCallsInHalfOpenState: 3
         automaticTransitionFromOpenToHalfOpenEnabled: true
@@ -119,10 +120,10 @@ resilience4j:
     instances:
       notificationCircuitBreaker:
         baseConfig: default
-        registerHealthIndicator: true  # ✅ Explícito também!
+        registerHealthIndicator: true
       quotaCircuitBreaker:
         baseConfig: default
-        registerHealthIndicator: true  # ✅ Para o serviço de quota
+        registerHealthIndicator: true
 
   timelimiter:
     configs:

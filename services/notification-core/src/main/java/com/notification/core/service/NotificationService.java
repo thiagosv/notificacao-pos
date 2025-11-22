@@ -1,7 +1,9 @@
 package com.notification.core.service;
 
 import com.notification.core.dto.NotificationRequest;
+import com.notification.core.dto.NotificationSentEvent;
 import com.notification.core.exception.NotificationNotFoundException;
+import com.notification.core.metrics.MetricsService;
 import com.notification.core.model.Notification;
 import com.notification.core.model.NotificationStatus;
 import com.notification.core.repository.NotificationRepository;
@@ -15,8 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * Service for managing notifications
@@ -27,6 +27,7 @@ import java.util.Optional;
 public class NotificationService {
 
     private final NotificationRepository notificationRepository;
+    private final MetricsService metricsService;
 
     /**
      * Create a new notification
@@ -52,6 +53,7 @@ public class NotificationService {
         notification = notificationRepository.save(notification);
         log.info("Notification created: id={}", notification.getId());
 
+        metricsService.incrementPending(notification.getChannel());
         return notification;
     }
 
@@ -61,13 +63,6 @@ public class NotificationService {
     public Notification findById(String id) {
         return notificationRepository.findById(id)
                 .orElseThrow(() -> new NotificationNotFoundException("Notification not found: " + id));
-    }
-
-    /**
-     * Find notification by idempotency key
-     */
-    public Optional<Notification> findByIdempotencyKey(String idempotencyKey) {
-        return notificationRepository.findByIdempotencyKey(idempotencyKey);
     }
 
     /**
@@ -81,17 +76,18 @@ public class NotificationService {
      * Update notification status to SENT
      */
     @Transactional
-    public void updateStatusToSent(String notificationId, String providerId, String providerMessageId) {
-        log.info("Updating notification to SENT: id={}, providerId={}", notificationId, providerId);
+    public void updateStatusToSent(NotificationSentEvent event) {
+        log.info("Updating notification to SENT: id={}, providerId={}", event.getNotificationId(), event.getProviderId());
 
-        Notification notification = findById(notificationId);
+        Notification notification = findById(event.getNotificationId());
         notification.setStatus(NotificationStatus.SENT);
-        notification.setProviderId(providerId);
-        notification.setProviderMessageId(providerMessageId);
+        notification.setProviderId(event.getProviderId());
+        notification.setProviderMessageId(event.getProviderMessageId());
         notification.setSentAt(LocalDateTime.now());
 
         notificationRepository.save(notification);
-        log.info("Notification status updated to SENT: id={}", notificationId);
+        log.info("Notification status updated to SENT: id={}", event.getNotificationId());
+        metricsService.incrementSent(notification, event);
     }
 
     /**
@@ -110,6 +106,8 @@ public class NotificationService {
             notification.setStatus(NotificationStatus.FAILED);
             notification.setFailedAt(LocalDateTime.now());
             log.error("Notification failed permanently: id={}, retries={}", notificationId, notification.getRetryCount());
+
+            metricsService.incrementFailed(notification.getChannel());
         } else {
             notification.setStatus(NotificationStatus.RETRYING);
             log.info("Notification will be retried: id={}, retryCount={}", notificationId, notification.getRetryCount());
@@ -118,30 +116,6 @@ public class NotificationService {
         return notificationRepository.save(notification);
     }
 
-    /**
-     * Update notification status to PROCESSING
-     */
-    @Transactional
-    public void updateStatusToProcessing(String notificationId) {
-        log.info("Updating notification to PROCESSING: id={}", notificationId);
-
-        Notification notification = findById(notificationId);
-        notification.setStatus(NotificationStatus.PROCESSING);
-
-        notificationRepository.save(notification);
-    }
-
-    /**
-     * Find notifications eligible for retry
-     */
-    public List<Notification> findEligibleForRetry(int minutesAgo) {
-        LocalDateTime before = LocalDateTime.now().minusMinutes(minutesAgo);
-        return notificationRepository.findEligibleForRetry(before);
-    }
-
-    /**
-     * Get notification statistics
-     */
     public NotificationStats getStats() {
         return NotificationStats.builder()
                 .pending(notificationRepository.countByStatus(NotificationStatus.PENDING))
@@ -152,9 +126,6 @@ public class NotificationService {
                 .build();
     }
 
-    /**
-     * Inner class for statistics
-     */
     @Data
     @Builder
     public static class NotificationStats {

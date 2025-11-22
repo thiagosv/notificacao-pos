@@ -32,11 +32,7 @@ public class NotificationEventConsumer {
         log.info("Received notification sent event: notificationId={}, providerId={}", event.getNotificationId(), event.getProviderId());
 
         try {
-            notificationService.updateStatusToSent(
-                    event.getNotificationId(),
-                    event.getProviderId(),
-                    event.getProviderMessageId()
-            );
+            notificationService.updateStatusToSent(event);
 
             if (acknowledgment != null)
                 acknowledgment.acknowledge();

@@ -3,7 +3,7 @@ FROM maven:4.0.0-rc-4-eclipse-temurin-21 AS build
 WORKDIR /build
 # Copia o monorepo inteiro
 COPY . .
-# Build completo para resolver o parent
+
 RUN mvn clean package -DskipTests -pl services/notification-core -am
 
 # Runtime stage

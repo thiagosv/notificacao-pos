@@ -1,4 +1,5 @@
-server.port: 8090
+server:
+  port: ${SERVER_PORT:8090}
 spring:
   application:
     name: provider-email
@@ -12,10 +13,24 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: "*"
+        # Performance tuning
+        max.poll.records: 500
+        max.poll.interval.ms: 300000
+        session.timeout.ms: 30000
+        heartbeat.interval.ms: 10000
+        fetch.min.bytes: 1024
+        fetch.max.wait.ms: 500
       enable-auto-commit: false
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    listener:
+      # Concurrency: número de threads consumidoras (idealmente = número de partições)
+      concurrency: ${KAFKA_LISTENER_CONCURRENCY:20}
+      # Poll timeout
+      poll-timeout: 3000
+      # Acknowledgment mode
+      ack-mode: manual
 
 kafka:
   topics:
@@ -59,7 +74,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,metrics,circuitbreakers,circuitbreakerevents
+        include: health,metrics,prometheus,circuitbreakers,circuitbreakerevents
   health:
     circuitbreakers:
       enabled: true
@@ -67,6 +82,9 @@ management:
     export:
       prometheus:
         enabled: true
+    tags:
+      application: ${spring.application.name}
+      service: provider-email
 
 logging:
   level:

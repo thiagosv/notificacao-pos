@@ -21,8 +21,11 @@ INFRA_CONTAINERS=(
   redis
   zookeeper
   kafka
+  kafka-init
   kafka-ui
   wiremock
+  prometheus
+  grafana
 )
 
 SERVICE_CONTAINERS=(

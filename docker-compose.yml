@@ -8,6 +8,8 @@ volumes:
   redis-data:
   kafka-data:
   zookeeper-data:
+  prometheus_data:
+  grafana_data:
 
 services:
   # ==========================================
@@ -118,12 +120,36 @@ services:
       timeout: 10s
       retries: 5
 
+  # Kafka Topics Initializer
+  kafka-init:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: notification-kafka-init
+    depends_on:
+      kafka:
+        condition: service_healthy
+    volumes:
+      - ./infrastructure/kafka/init-topics.sh:/init-topics.sh
+    environment:
+      # Configuração de partições por tópico
+      NOTIFICATION_CREATED_PARTITIONS: 40
+      NOTIFICATION_SENT_PARTITIONS: 20
+      NOTIFICATION_FAILED_PARTITIONS: 20
+      # Retenção em horas
+      NOTIFICATION_CREATED_RETENTION: 168
+      NOTIFICATION_SENT_RETENTION: 72
+      NOTIFICATION_FAILED_RETENTION: 168
+    networks:
+      - notification-network
+    entrypoint: ["/bin/bash", "/init-topics.sh"]
+    restart: "no"
+
   # Kafka UI
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     container_name: notification-kafka-ui
     depends_on:
       - kafka
+      - kafka-init
     ports:
       - "8888:8080"
     environment:
@@ -132,6 +158,39 @@ services:
     networks:
       - notification-network
 
+  # ==========================================
+  #  MONITORAMENTO
+  # ==========================================
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: notification-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./infrastructure/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    networks:
+      - notification-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: notification-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin123
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./infrastructure/grafana/provisioning:/etc/grafana/provisioning
+      - ./infrastructure/grafana/dashboards:/var/lib/grafana/dashboards
+    networks:
+      - notification-network
   # ==========================================
   # WIREMOCK (Provedores Mock)
   # ==========================================
@@ -262,8 +321,10 @@ services:
       dockerfile: services/provider-push/Dockerfile
     container_name: notification-provider-push
     environment:
+      SERVER_PORT: 8080
       WIREMOCK_HOST: http://wiremock:8080
       KAFKA_BOOTSTRAP: kafka:9092
+      KAFKA_LISTENER_CONCURRENCY: 40
     networks:
       - notification-network
     depends_on:
@@ -285,8 +346,10 @@ services:
       dockerfile: services/provider-email/Dockerfile
     container_name: notification-provider-email
     environment:
+      SERVER_PORT: 8080
       WIREMOCK_HOST: http://wiremock:8080
       KAFKA_BOOTSTRAP: kafka:9092
+      KAFKA_LISTENER_CONCURRENCY: 40
     networks:
       - notification-network
     depends_on:
@@ -308,8 +371,10 @@ services:
       dockerfile: services/provider-sms/Dockerfile
     container_name: notification-provider-sms
     environment:
+      SERVER_PORT: 8080
       WIREMOCK_HOST: http://wiremock:8080
       KAFKA_BOOTSTRAP: kafka:9092
+      KAFKA_LISTENER_CONCURRENCY: 40
     networks:
       - notification-network
     depends_on:
