@@ -236,8 +236,8 @@
       "gridPos": {
         "h": 7,
         "w": 7,
-        "x": 0,
-        "y": 7
+        "x": 14,
+        "y": 0
       },
       "id": 2,
       "options": {
@@ -265,6 +265,70 @@
       ],
       "title": "Custo médio por notificação",
       "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "bf4wyjyk9clc0f"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 7,
+        "x": 0,
+        "y": 7
+      },
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.2.0-16636675413",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "sum(rate(notification_cost_total[1h]))",
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Custo por hora",
+      "type": "stat"
     },
     {
       "datasource": {
@@ -328,17 +392,15 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
-        "w": 7,
-        "x": 7,
-        "y": 7
+        "h": 9,
+        "w": 21,
+        "x": 0,
+        "y": 14
       },
       "id": 5,
       "options": {
         "legend": {
-          "calcs": [
-            "sum"
-          ],
+          "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
           "showLegend": true
@@ -358,7 +420,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "sum(notification_total) by (channel)",
+          "expr": "sum(increase(notification_total[5m])) by (channel)",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "legendFormat": "{{channel}}",
@@ -367,7 +429,7 @@
           "useBackend": false
         }
       ],
-      "title": "Total por canal",
+      "title": "Total notificações por canal",
       "type": "timeseries"
     },
     {
@@ -387,10 +449,6 @@
               {
                 "color": "green",
                 "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           }
@@ -398,12 +456,12 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 14,
+        "h": 7,
+        "w": 7,
         "x": 0,
-        "y": 14
+        "y": 23
       },
-      "id": 4,
+      "id": 7,
       "options": {
         "colorMode": "value",
         "graphMode": "area",
@@ -412,7 +470,7 @@
         "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "sum"
           ],
           "fields": "",
           "values": false
@@ -424,15 +482,99 @@
       "pluginVersion": "12.2.0-16636675413",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "bf4wyjyk9clc0f"
+          },
+          "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "sum(rate(notification_cost_total[1h]))",
+          "expr": "sum(increase(notification_total{status=\"sent\"}[$__rate_interval]))",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
           "legendFormat": "__auto",
           "range": true,
-          "refId": "A"
+          "refId": "A",
+          "useBackend": false
         }
       ],
-      "title": "Custo por hora",
+      "title": "Total",
       "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "bf4wyjyk9clc0f"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 7,
+        "x": 7,
+        "y": 23
+      },
+      "id": 6,
+      "options": {
+        "displayMode": "basic",
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "text"
+      },
+      "pluginVersion": "12.2.0-16636675413",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "bf4wyjyk9clc0f"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "sum(increase(notification_total{status=\"sent\"}[$__rate_interval])) by (channel)",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "legendFormat": "{{channel}}",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "Total por canal",
+      "type": "bargauge"
     }
   ],
   "preload": false,
@@ -449,5 +591,5 @@
   "timezone": "browser",
   "title": "Custo",
   "uid": "e5a7b10c-74ba-43ae-a0ca-308b1b557f4b",
-  "version": 5
+  "version": 7
 }
