@@ -1,6 +1,5 @@
-package com.notification.core.dto;
+package com.notification.provider.email.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -10,9 +9,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class NotificationSentEvent {
-
     private String notificationId;
     private String providerId;
     private String providerMessageId;

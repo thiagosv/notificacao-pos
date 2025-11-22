@@ -29,6 +29,7 @@ SERVICE_CONTAINERS=(
   quota-service
   notification-core
   provider-push
+  provider-email
   api-gateway
 )
 
@@ -122,10 +123,10 @@ function up_services() {
 function rebuild() {
   local svc="$1"
   if [ -z "$svc" ]; then
-    die "logs requires a service name: usage: $0 logs <container-name>"
+    die "rebuild requires a service name: usage: $0 rebuild <container-name>"
   fi
   docker-compose build "$svc"
-  docker compose up -d --force-recreate "$svc"
+  docker-compose up -d --force-recreate "$svc"
 }
 
 function stop_all() {
@@ -186,6 +187,10 @@ case "$1" in
     ;;
   stop)
     stop_all
+    ;;
+  rebuild)
+    shift
+    rebuild "$@"
     ;;
   status)
     status

@@ -24,7 +24,6 @@ public class QuotaValidationService {
     @Value("${quota-service.url}")
     private String quotaServiceUrl;
 
-    @CircuitBreaker(name = "quotaService", fallbackMethod = "quotaValidationFallback")
     @Retry(name = "quotaService")
     public boolean validateAndConsumeQuota(String clientId, Channel channel, Long amount, String notificationId) {
         log.info("Validating quota: clientId={}, channel={}, amount={}, notificationId={}",

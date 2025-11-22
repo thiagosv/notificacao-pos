@@ -1,0 +1,42 @@
+server.port: 8090
+spring:
+  application:
+    name: provider-email
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9093}
+    consumer:
+      group-id: email-provider-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+      enable-auto-commit: false
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+kafka:
+  topics:
+    notification-created: notification.created
+    notification-sent: notification.sent
+    notification-failed: notification.failed
+
+email-provider:
+  url: ${WIREMOCK_HOST:http://localhost:8080}/email/send
+  max-retries: 3
+  retry-delay-ms: 1000
+  error-rate: 0.1  # 10% de chance de erro
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics
+
+logging:
+  level:
+    root: INFO
+    com.notification.provider.email: DEBUG
+

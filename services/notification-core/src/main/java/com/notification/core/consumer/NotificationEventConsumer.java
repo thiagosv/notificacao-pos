@@ -22,7 +22,7 @@ public class NotificationEventConsumer {
     @KafkaListener(
             topics = "${kafka.topics.notification-sent}",
             groupId = "${spring.kafka.consumer.group-id}",
-            containerFactory = "kafkaListenerContainerFactory"
+            containerFactory = "notificationSentListenerFactory"
     )
     public void handleNotificationSent(NotificationSentEvent event, Acknowledgment acknowledgment) {
         log.info("Received notification sent event: notificationId={}, providerId={}", event.getNotificationId(), event.getProviderId());
@@ -43,13 +43,10 @@ public class NotificationEventConsumer {
         }
     }
 
-    /**
-     * Handle notification failed event (from providers)
-     */
     @KafkaListener(
             topics = "${kafka.topics.notification-failed}",
             groupId = "${spring.kafka.consumer.group-id}",
-            containerFactory = "kafkaListenerContainerFactory"
+            containerFactory = "notificationFailedListenerFactory"
     )
     public void handleNotificationFailed(NotificationFailedEvent event, Acknowledgment acknowledgment) {
         log.warn("Received notification failed event: notificationId={}, reason={}", event.getNotificationId(), event.getFailureReason());
