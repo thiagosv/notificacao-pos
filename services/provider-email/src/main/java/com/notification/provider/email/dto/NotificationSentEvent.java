@@ -2,6 +2,7 @@ package com.notification.provider.email.dto;
 
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
@@ -13,6 +14,7 @@ public class NotificationSentEvent {
     private String notificationId;
     private String providerId;
     private String providerMessageId;
+    private BigDecimal cost;
     private LocalDateTime timestamp;
 }
 

@@ -35,7 +35,7 @@ public class PushNotificationConsumer {
 
         try {
             PushResponse response = pushNotificationService.sendPushNotification(event);
-            eventPublisher.publishNotificationSent(event.getNotificationId(), response.getMessageId());
+            eventPublisher.publishNotificationSent(event.getNotificationId(), response);
             ack.acknowledge();
             log.info("PUSH notification sent successfully: id={}", event.getNotificationId());
         } catch (Exception e) {

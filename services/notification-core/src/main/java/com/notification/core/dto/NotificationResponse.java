@@ -24,6 +24,7 @@ public class NotificationResponse {
     private NotificationStatus status;
     private Priority priority;
     private String message;
+    private int retryCount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -38,6 +39,7 @@ public class NotificationResponse {
                 .status(notification.getStatus())
                 .priority(notification.getPriority())
                 .message("Notification created successfully")
+                .retryCount(notification.getRetryCount())
                 .createdAt(notification.getCreatedAt())
                 .updatedAt(notification.getUpdatedAt())
                 .build();

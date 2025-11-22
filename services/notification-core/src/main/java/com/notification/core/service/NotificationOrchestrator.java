@@ -68,7 +68,7 @@ public class NotificationOrchestrator {
         return NotificationResponse.of(notification);
     }
 
-    private void publishNotificationEvent(Notification notification) {
+    public void publishNotificationEvent(Notification notification) {
         try {
             NotificationEvent event = NotificationEvent.of(notification);
             Message<NotificationEvent> message = MessageBuilder

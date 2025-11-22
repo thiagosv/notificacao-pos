@@ -24,19 +24,53 @@ kafka:
     notification-failed: notification.failed
 
 push-provider:
-  url: ${WIREMOCK_HOST:http://localhost:8080}/push/send
-  max-retries: 3
-  retry-delay-ms: 1000
-  error-rate: 0.1  # 10% de chance de erro
+  primary:
+    url: ${WIREMOCK_HOST:http://localhost:8080}/push/primary/send
+    name: Firebase_FCM
+  secondary:
+    url: ${WIREMOCK_HOST:http://localhost:8080}/push/secondary/send
+    name: OneSignal
+
+# Resilience4j Circuit Breaker Configuration
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 100
+        minimumNumberOfCalls: 10
+        failureRateThreshold: 20
+        waitDurationInOpenState: 30s
+        permittedNumberOfCallsInHalfOpenState: 5
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        recordExceptions:
+          - java.lang.Exception
+    instances:
+      push-primary:
+        baseConfig: default
+        slidingWindowSize: 100
+        failureRateThreshold: 20
+      push-secondary:
+        baseConfig: default
+        slidingWindowSize: 100
+        failureRateThreshold: 50
 
 management:
   endpoints:
     web:
       exposure:
-        include: health,metrics
+        include: health,metrics,circuitbreakers,circuitbreakerevents
+  health:
+    circuitbreakers:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
 
 logging:
   level:
     root: INFO
     com.notification.provider.push: DEBUG
+    io.github.resilience4j: DEBUG
 

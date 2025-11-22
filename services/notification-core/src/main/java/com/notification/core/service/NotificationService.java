@@ -34,7 +34,7 @@ public class NotificationService {
     @Transactional
     public Notification createNotification(NotificationRequest request) {
         log.info("Creating notification: clientId={}, channel={}, idempotencyKey={}",
-                 request.getClientId(), request.getChannel(), request.getIdempotencyKey());
+                request.getClientId(), request.getChannel(), request.getIdempotencyKey());
 
         Notification notification = Notification.builder()
                 .clientId(request.getClientId())
@@ -96,9 +96,10 @@ public class NotificationService {
 
     /**
      * Handle notification failure
+     * Returns the updated notification so caller can decide to republish if needed
      */
     @Transactional
-    public void handleFailure(String notificationId, String failureReason) {
+    public Notification handleFailure(String notificationId, String failureReason) {
         log.warn("Handling notification failure: id={}, reason={}", notificationId, failureReason);
 
         Notification notification = findById(notificationId);
@@ -108,15 +109,13 @@ public class NotificationService {
         if (notification.hasReachedMaxRetries()) {
             notification.setStatus(NotificationStatus.FAILED);
             notification.setFailedAt(LocalDateTime.now());
-            log.error("Notification failed permanently: id={}, retries={}",
-                     notificationId, notification.getRetryCount());
+            log.error("Notification failed permanently: id={}, retries={}", notificationId, notification.getRetryCount());
         } else {
             notification.setStatus(NotificationStatus.RETRYING);
-            log.info("Notification will be retried: id={}, retryCount={}",
-                    notificationId, notification.getRetryCount());
+            log.info("Notification will be retried: id={}, retryCount={}", notificationId, notification.getRetryCount());
         }
 
-        notificationRepository.save(notification);
+        return notificationRepository.save(notification);
     }
 
     /**

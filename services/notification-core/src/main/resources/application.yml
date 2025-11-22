@@ -70,6 +70,7 @@ kafka:
     notification-created: notification.created
     notification-sent: notification.sent
     notification-failed: notification.failed
+    notification-failed-dlq: notification.failed.dlq
 
 # Quota Service Client
 quota-service:

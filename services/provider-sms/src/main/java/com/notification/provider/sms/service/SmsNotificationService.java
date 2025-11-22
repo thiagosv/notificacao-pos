@@ -1,9 +1,9 @@
 package com.notification.provider.sms.service;
 
-import com.notification.provider.sms.client.SmsProviderClient;
 import com.notification.provider.sms.dto.NotificationEvent;
 import com.notification.provider.sms.dto.SmsRequest;
 import com.notification.provider.sms.dto.SmsResponse;
+import com.notification.provider.sms.provider.SmsProviderChain;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class SmsNotificationService {
 
-    private final SmsProviderClient smsProviderClient;
+    private final SmsProviderChain smsProviderChain;
 
     public SmsResponse sendSmsNotification(NotificationEvent event) {
         log.info("Processing SMS notification: id={}", event.getNotificationId());
@@ -26,7 +26,7 @@ public class SmsNotificationService {
             .build();
 
         try {
-            return smsProviderClient.send(request);
+            return smsProviderChain.send(request);
         } catch (Exception e) {
             throw new RuntimeException("Failed to send sms notification", e);
         }

@@ -35,7 +35,7 @@ public class SmsNotificationConsumer {
 
         try {
             SmsResponse response = smsNotificationService.sendSmsNotification(event);
-            eventPublisher.publishNotificationSent(event.getNotificationId(), response.getMessageId());
+            eventPublisher.publishNotificationSent(event.getNotificationId(), response);
             ack.acknowledge();
             log.info("SMS notification sent successfully: id={}", event.getNotificationId());
         } catch (Exception e) {

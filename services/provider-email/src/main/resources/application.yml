@@ -24,19 +24,53 @@ kafka:
     notification-failed: notification.failed
 
 email-provider:
-  url: ${WIREMOCK_HOST:http://localhost:8080}/email/send
-  max-retries: 3
-  retry-delay-ms: 1000
-  error-rate: 0.1  # 10% de chance de erro
+  primary:
+    url: ${WIREMOCK_HOST:http://localhost:8080}/email/primary/send
+    name: SendGrid
+  secondary:
+    url: ${WIREMOCK_HOST:http://localhost:8080}/email/secondary/send
+    name: Amazon_SES
+
+# Resilience4j Circuit Breaker Configuration
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 100
+        minimumNumberOfCalls: 10
+        failureRateThreshold: 20
+        waitDurationInOpenState: 30s
+        permittedNumberOfCallsInHalfOpenState: 5
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        recordExceptions:
+          - java.lang.Exception
+    instances:
+      email-primary:
+        baseConfig: default
+        slidingWindowSize: 100
+        failureRateThreshold: 20
+      email-secondary:
+        baseConfig: default
+        slidingWindowSize: 100
+        failureRateThreshold: 50
 
 management:
   endpoints:
     web:
       exposure:
-        include: health,metrics
+        include: health,metrics,circuitbreakers,circuitbreakerevents
+  health:
+    circuitbreakers:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
 
 logging:
   level:
     root: INFO
     com.notification.provider.email: DEBUG
+    io.github.resilience4j: DEBUG
 

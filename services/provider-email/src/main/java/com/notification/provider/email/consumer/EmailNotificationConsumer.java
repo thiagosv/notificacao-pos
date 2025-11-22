@@ -35,7 +35,7 @@ public class EmailNotificationConsumer {
 
         try {
             EmailResponse response = emailNotificationService.sendEmailNotification(event);
-            eventPublisher.publishNotificationSent(event.getNotificationId(), response.getMessageId());
+            eventPublisher.publishNotificationSent(event.getNotificationId(), response);
             ack.acknowledge();
             log.info("EMAIL notification sent successfully: id={}", event.getNotificationId());
         } catch (Exception e) {

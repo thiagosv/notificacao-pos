@@ -2,12 +2,14 @@ package com.notification.provider.push.service;
 
 import com.notification.provider.push.dto.NotificationFailedEvent;
 import com.notification.provider.push.dto.NotificationSentEvent;
+import com.notification.provider.push.dto.PushResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Slf4j
@@ -23,13 +25,14 @@ public class NotificationEventPublisher {
     @Value("${kafka.topics.notification-failed}")
     private String notificationFailedTopic;
 
-    public void publishNotificationSent(String notificationId, String messageId) {
+    public void publishNotificationSent(String notificationId, PushResponse response) {
         NotificationSentEvent event = NotificationSentEvent.builder()
-            .notificationId(notificationId)
-            .providerId("push-provider")
-            .providerMessageId(messageId)
-            .timestamp(LocalDateTime.now())
-            .build();
+                .notificationId(notificationId)
+                .providerId(response.getProvider())
+                .providerMessageId(response.getMessageId())
+                .cost(response.getCost() != null ? response.getCost() : BigDecimal.ZERO)
+                .timestamp(LocalDateTime.now())
+                .build();
 
         kafkaTemplate.send(notificationSentTopic, notificationId, event);
         log.info("Published notification.sent: id={}", notificationId);
@@ -37,10 +40,10 @@ public class NotificationEventPublisher {
 
     public void publishNotificationFailed(String notificationId, String failureReason) {
         NotificationFailedEvent event = NotificationFailedEvent.builder()
-            .notificationId(notificationId)
-            .failureReason(failureReason)
-            .timestamp(LocalDateTime.now())
-            .build();
+                .notificationId(notificationId)
+                .failureReason(failureReason)
+                .timestamp(LocalDateTime.now())
+                .build();
 
         kafkaTemplate.send(notificationFailedTopic, notificationId, event);
         log.error("Published notification.failed: id={}, reason={}", notificationId, failureReason);

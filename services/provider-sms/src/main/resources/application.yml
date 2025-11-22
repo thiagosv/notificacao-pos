@@ -24,19 +24,53 @@ kafka:
     notification-failed: notification.failed
 
 sms-provider:
-  url: ${WIREMOCK_HOST:http://localhost:8080}/sms/send
-  max-retries: 3
-  retry-delay-ms: 1000
-  error-rate: 0.1  # 10% de chance de erro
+  primary:
+    url: ${WIREMOCK_HOST:http://localhost:8080}/sms/primary/send
+    name: Twilio
+  secondary:
+    url: ${WIREMOCK_HOST:http://localhost:8080}/sms/secondary/send
+    name: AWS_SNS
+
+# Resilience4j Circuit Breaker Configuration
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 100
+        minimumNumberOfCalls: 10
+        failureRateThreshold: 20
+        waitDurationInOpenState: 30s
+        permittedNumberOfCallsInHalfOpenState: 5
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        recordExceptions:
+          - java.lang.Exception
+    instances:
+      sms-primary:
+        baseConfig: default
+        slidingWindowSize: 100
+        failureRateThreshold: 20
+      sms-secondary:
+        baseConfig: default
+        slidingWindowSize: 100
+        failureRateThreshold: 50
 
 management:
   endpoints:
     web:
       exposure:
-        include: health,metrics
+        include: health,metrics,circuitbreakers,circuitbreakerevents
+  health:
+    circuitbreakers:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
 
 logging:
   level:
     root: INFO
     com.notification.provider.sms: DEBUG
+    io.github.resilience4j: DEBUG
 
