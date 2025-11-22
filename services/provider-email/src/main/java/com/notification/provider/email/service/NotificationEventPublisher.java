@@ -26,7 +26,7 @@ public class NotificationEventPublisher {
     public void publishNotificationSent(String notificationId, String messageId) {
         NotificationSentEvent event = NotificationSentEvent.builder()
             .notificationId(notificationId)
-            .providerId("push-provider")
+            .providerId("email-provider")
             .providerMessageId(messageId)
             .timestamp(LocalDateTime.now())
             .build();
