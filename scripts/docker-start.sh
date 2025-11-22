@@ -30,6 +30,7 @@ SERVICE_CONTAINERS=(
   notification-core
   provider-push
   provider-email
+  provider-sms
   api-gateway
 )
 

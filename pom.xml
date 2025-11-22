@@ -38,6 +38,7 @@
         <module>services/notification-core</module>
         <module>services/provider-push</module>
         <module>services/provider-email</module>
+        <module>services/provider-sms</module>
     </modules>
 
     <dependencyManagement>

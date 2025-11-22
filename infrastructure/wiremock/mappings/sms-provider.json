@@ -1,0 +1,23 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPathTemplate": "/sms/send"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "success": true,
+      "messageId": "sms-{{randomValue type='UUID'}}",
+      "timestamp": "{{now format='yyyy-MM-dd HH:mm:ss'}}"
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "transformers": ["response-template"],
+    "delayDistribution": {
+      "type": "uniform",
+      "lower": 100,
+      "upper": 500
+    }
+  }
+}

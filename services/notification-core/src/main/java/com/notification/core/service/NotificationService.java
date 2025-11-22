@@ -5,6 +5,8 @@ import com.notification.core.exception.NotificationNotFoundException;
 import com.notification.core.model.Notification;
 import com.notification.core.model.NotificationStatus;
 import com.notification.core.repository.NotificationRepository;
+import lombok.Builder;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -154,8 +156,8 @@ public class NotificationService {
     /**
      * Inner class for statistics
      */
-    @lombok.Data
-    @lombok.Builder
+    @Data
+    @Builder
     public static class NotificationStats {
         private long pending;
         private long processing;
