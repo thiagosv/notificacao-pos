@@ -4,14 +4,14 @@ WORKDIR /build
 # Copia o monorepo inteiro
 COPY . .
 # Build completo para resolver o parent
-RUN mvn clean package -DskipTests -pl services/notification-core -am
+RUN mvn clean package -DskipTests -pl services/provider-email -am
 
 # Runtime stage
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
 # Copy the built artifact
-COPY --from=build /build/services/notification-core/target/notification-core-*.jar app.jar
+COPY --from=build /build/services/provider-email/target/provider-email-*.jar app.jar
 
 # Add a non-root user for security
 RUN addgroup -S spring && adduser -S spring -G spring
