@@ -9,6 +9,7 @@ set -euo pipefail
 #   ./scripts/docker-start.sh all       # infra + services
 #   ./scripts/docker-start.sh stop      # derruba tudo
 #   ./scripts/docker-start.sh status    # mostra status dos containers gerenciados
+#   ./scripts/docker-start.sh rebuild   # rebuilda um service
 #   ./scripts/docker-start.sh logs <service>  # segue logs de um container
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
