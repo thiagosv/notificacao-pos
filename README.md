@@ -61,7 +61,7 @@ Sistema desenvolvido como Projeto Aplicado da Pós-Graduação em Arquitetura de
 ### Subir Todo o Sistema
 ```bash
 # Clone o repositório
-git clone <url-do-repo>
+git clone https://github.com/thiagosv/notificacao-pos.git
 cd notification-system
 
 # Subir todos os serviços
@@ -148,12 +148,12 @@ notification-system/
 - [x] Persistência PostgreSQL + Flyway
 
 ### 🚧 Sprint 2 (Em Andamento)
-- [ ] Notification Core Service
-- [ ] Provider Email (WireMock)
-- [ ] Provider SMS (WireMock)
-- [ ] Provider Push (WireMock)
-- [ ] Observabilidade completa (OTEL + Prometheus + Grafana)
-- [ ] Testes de carga
+- [x] Notification Core Service
+- [x] Provider Email (WireMock)
+- [x] Provider SMS (WireMock)
+- [x] Provider Push (WireMock)
+- [x] Observabilidade completa (OTEL + Prometheus + Grafana)
+- [x] Testes de carga
 
 ### 📅 Sprint 3 (Planejada)
 - [ ] Event Sourcing com Kafka
@@ -171,22 +171,6 @@ notification-system/
 - [Diagramas de Sequência](docs/architecture/diagrams/)
 
 ## 📊 Métricas e Monitoramento
-
-### Prometheus
-
-Acesse: http://localhost:9090
-
-Queries úteis:
-```promql
-# Taxa de requisições
-rate(http_server_requests_seconds_count[1m])
-
-# Circuit Breaker state
-resilience4j_circuitbreaker_state
-
-# Uso de quota
-quota_consumption_total
-```
 
 ### Grafana
 
