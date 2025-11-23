@@ -134,10 +134,12 @@ services:
       NOTIFICATION_CREATED_PARTITIONS: 40
       NOTIFICATION_SENT_PARTITIONS: 20
       NOTIFICATION_FAILED_PARTITIONS: 20
+      NOTIFICATION_FAILED_DLQ_PARTITIONS: 5
       # Retenção em horas
       NOTIFICATION_CREATED_RETENTION: 168
       NOTIFICATION_SENT_RETENTION: 72
       NOTIFICATION_FAILED_RETENTION: 168
+      NOTIFICATION_FAILED_DLQ_RETENTION: 336
     networks:
       - notification-network
     entrypoint: ["/bin/bash", "/init-topics.sh"]
@@ -227,6 +229,7 @@ services:
       REDIS_PORT: 6379
       NOTIFICATION_SERVICE_URI: http://notification-core:8080
       QUOTA_SERVICE_URI: http://quota-service:8080
+      AUDIT_SERVICE_URI: http://audit-service:8080
     networks:
       - notification-network
     depends_on:
@@ -375,6 +378,37 @@ services:
       WIREMOCK_HOST: http://wiremock:8080
       KAFKA_BOOTSTRAP: kafka:9092
       KAFKA_LISTENER_CONCURRENCY: 40
+    networks:
+      - notification-network
+    depends_on:
+      kafka:
+        condition: service_healthy
+      wiremock:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+
+  # ==========================================
+  # AUDIT
+  # ==========================================
+  audit-service:
+    build:
+      context: .
+      dockerfile: services/audit-service/Dockerfile
+    container_name: notification-audit-service
+    environment:
+      SERVER_PORT: 8080
+      KAFKA_BOOTSTRAP: kafka:9092
+      KAFKA_LISTENER_CONCURRENCY: 40
+      SPRING_PROFILES_ACTIVE: docker
+      POSTGRESQL_HOST: postgres
+      POSTGRESQL_USER: notification
+      POSTGRESQL_PASS: notification123
     networks:
       - notification-network
     depends_on:

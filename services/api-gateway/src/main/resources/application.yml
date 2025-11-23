@@ -58,6 +58,18 @@ spring:
                 name: quotaCircuitBreaker
                 fallbackUri: forward:/fallback/quotas
 
+        # Audit Service
+        - id: audit-service
+          uri: ${AUDIT_SERVICE_URI:http://localhost:8080}
+          predicates:
+            - Path=/api/audit/**
+          filters:
+            - RewritePath=/api/audit/(?<segment>.*), /${segment}
+            - name: CircuitBreaker
+              args:
+                name: auditCircuitBreaker
+                fallbackUri: forward:/fallback/audit
+
       # Global CORS Configuration
       globalcors:
         cors-configurations:
@@ -124,6 +136,9 @@ resilience4j:
       quotaCircuitBreaker:
         baseConfig: default
         registerHealthIndicator: true
+      auditCircuitBreaker:
+        baseConfig: default
+        registerHealthIndicator: true
 
   timelimiter:
     configs:
@@ -133,6 +148,8 @@ resilience4j:
       notificationCircuitBreaker:
         timeoutDuration: 5s
       quotaCircuitBreaker:
+        timeoutDuration: 5s
+      auditCircuitBreaker:
         timeoutDuration: 5s
 
 # Management Endpoints - ATUALIZAR

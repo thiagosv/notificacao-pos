@@ -1,0 +1,1 @@
+CREATE INDEX idx_event_store_timestamp ON event_store(timestamp);

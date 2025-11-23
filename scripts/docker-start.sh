@@ -36,6 +36,7 @@ SERVICE_CONTAINERS=(
   provider-email
   provider-sms
   api-gateway
+  audit-service
 )
 
 # Timeout in seconds for waiting health

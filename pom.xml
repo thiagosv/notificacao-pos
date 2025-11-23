@@ -39,6 +39,7 @@
         <module>services/provider-push</module>
         <module>services/provider-email</module>
         <module>services/provider-sms</module>
+        <module>services/audit-service</module>
     </modules>
 
     <dependencyManagement>

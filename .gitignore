@@ -5,3 +5,4 @@
 /services/provider-push/target/
 /services/provider-email/target/
 /services/provider-sms/target/
+/services/audit-service/target/
