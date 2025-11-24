@@ -18,7 +18,7 @@ Plataforma de notificações multi-canal projetada para suportar alta carga com 
 
 ## 🏗️ Arquitetura
 
-![](docs\arquitetura\arch.png)
+![](docs/arquitetura/arch.png)
 
 ### Fluxo de Comunicação
 
