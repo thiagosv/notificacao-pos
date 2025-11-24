@@ -173,7 +173,7 @@
 												"header": [],
 												"body": {
 													"mode": "raw",
-													"raw": "{\r\n    \"clientId\": \"demo-client\",\r\n    \"channel\": \"EMAIL\",\r\n    \"totalQuota\": 200\r\n  }",
+													"raw": "{\r\n    \"clientId\": \"demo-client\",\r\n    \"channel\": \"SMS\",\r\n    \"totalQuota\": 200\r\n  }",
 													"options": {
 														"raw": {
 															"language": "json"
@@ -476,6 +476,23 @@
 								},
 								{
 									"name": "send",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"// const body = pm.request.body.raw;\r",
+													"// const randomInt = _.random(1, 100000);\r",
+													"// body.idempotencyKey = body.idempotencyKey + randomInt\r",
+													"// pm.request.body.raw = body;\r",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
 									"request": {
 										"method": "POST",
 										"header": [
@@ -487,7 +504,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{\r\n    \"idempotencyKey\": \"test-push-005\",\r\n    \"clientId\": \"demo-client\",\r\n    \"channel\": \"PUSH\",\r\n    \"recipient\": \"sada12312dfaf!@SAF3231ad\",\r\n    \"subject\": \"Welcome to our platform!\",\r\n    \"content\": \"Hello! This is a test push notification.\",\r\n    \"priority\": \"MEDIUM\",\r\n    \"maxRetries\": 3\r\n  }",
+											"raw": "{\r\n    \"idempotencyKey\": \"test-email-{{$randomInt}}\",\r\n    \"clientId\": \"demo-client\",\r\n    \"channel\": \"EMAIL\",\r\n    \"recipient\": \"51999999999\",\r\n    \"subject\": \"Welcome to our platform!\",\r\n    \"content\": \"Hello! This is a test email notification.\",\r\n    \"priority\": \"MEDIUM\",\r\n    \"maxRetries\": 3\r\n  }",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -513,13 +530,19 @@
 										"method": "GET",
 										"header": [],
 										"url": {
-											"raw": "{{notification_host}}/notifications/392d3db4-a480-439b-bb71-cc29974fc5c3",
+											"raw": "{{notification_host}}/notifications/:id",
 											"host": [
 												"{{notification_host}}"
 											],
 											"path": [
 												"notifications",
-												"392d3db4-a480-439b-bb71-cc29974fc5c3"
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "56507a5d-9e56-4f44-b714-d42a0e937689"
+												}
 											]
 										}
 									},
@@ -1199,7 +1222,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"teste\": \"teste\"\r\n}",
+							"raw": "{\r\n    \"idempotencyKey\": \"test-email-009\",\r\n    \"clientId\": \"demo-client\",\r\n    \"channel\": \"EMAIL\",\r\n    \"recipient\": \"sada12312dfaf!@SAF3231ad\",\r\n    \"subject\": \"Welcome to our platform!\",\r\n    \"content\": \"Hello! This is a test email notification.\",\r\n    \"priority\": \"MEDIUM\",\r\n    \"maxRetries\": 3\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1207,19 +1230,187 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/push/send",
+							"raw": "http://localhost:8080/email/primary/send",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"push",
+								"email",
+								"primary",
 								"send"
 							]
 						}
 					},
 					"response": []
+				}
+			]
+		},
+		{
+			"name": "notificacao",
+			"item": [
+				{
+					"name": "health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8082/actuator/health",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"actuator",
+								"health"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "send",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"idempotencyKey\": \"test-email-016\",\r\n    \"clientId\": \"demo-client\",\r\n    \"channel\": \"EMAIL\",\r\n    \"recipient\": \"teste@email.com\",\r\n    \"subject\": \"Welcome to our platform!\",\r\n    \"content\": \"Hello! This is a test email notification.\",\r\n    \"priority\": \"MEDIUM\",\r\n    \"maxRetries\": 3\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8082/notifications/send",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"notifications",
+								"send"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8082/notifications/392d3db4-a480-439b-bb71-cc29974fc5c3",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"notifications",
+								"392d3db4-a480-439b-bb71-cc29974fc5c3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get by Client ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{notification_host}}/notifications/client/demo-client",
+							"host": [
+								"{{notification_host}}"
+							],
+							"path": [
+								"notifications",
+								"client",
+								"demo-client"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "stats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{notification_host}}/notifications/stats",
+							"host": [
+								"{{notification_host}}"
+							],
+							"path": [
+								"notifications",
+								"stats"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{access_token}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {},
+						"exec": [
+							"pm.sendRequest({\r",
+							"    url: 'http://localhost:8081/api/auth/login',\r",
+							"    method: 'POST',\r",
+							"    header: 'Content-Type: application/json',\r",
+							"    body: {\r",
+							"        mode: 'raw',\r",
+							"        raw: JSON.stringify({ clientId: 'demo-client', password: 'demo123' })\r",
+							"    }\r",
+							"}, function (err, response) {\r",
+							"    if (err) {\r",
+							"        console.error(err);\r",
+							"    } else {\r",
+							"        if (response.code === 200) {\r",
+							"            var responseBody = response.json();\r",
+							"            pm.collectionVariables.set('access_token', responseBody.token);\r",
+							"        } else {\r",
+							"            console.error('Failed to login. Response code:', response.code);\r",
+							"        }\r",
+							"    }\r",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {},
+						"exec": [
+							""
+						]
+					}
 				}
 			]
 		}
