@@ -1,23 +1,23 @@
 # Sistema de Notificações Multi-Canal
 
-Sistema distribuído de notificações baseado em microsserviços com controle de cotas, resiliência e observabilidade completa.
+Sistema distribuído de notificações baseado em arquitetura de microsserviços, implementando controle de cotas, resiliência, event sourcing e observabilidade completa.
 
 ## 🎯 Visão Geral
 
-Sistema desenvolvido como Projeto Aplicado da Pós-Graduação em Arquitetura de Software e Soluções (XP Educação), demonstrando aplicação prática de padrões modernos de arquitetura distribuída.
+Plataforma de notificações multi-canal projetada para suportar alta carga com controle granular de cotas, auditoria completa e resiliência avançada. O sistema foi desenvolvido aplicando padrões modernos de arquitetura distribuída.
 
-### Funcionalidades Principais
+### Características Principais
 
-- ✅ **Notificações Multi-Canal**: Email, SMS, Push, WhatsApp
-- ✅ **Controle de Cotas**: Gerenciamento de limites por cliente e canal
-- ✅ **Autenticação JWT**: Gateway centralizado com segurança
-- ✅ **Resiliência**: Circuit Breaker, Fallback, Retry
-- ✅ **Observabilidade**: Tracing distribuído, métricas, logs
-- ✅ **Event Sourcing**: Auditoria completa com Kafka
-- ✅ **CQRS**: Separação de comandos e consultas
-- ✅ **Cache**: Redis para alta performance
+- **Notificações Multi-Canal**: Suporte para Email, SMS e Push Notifications
+- **Controle de Cotas**: Gerenciamento de limites de consumo por cliente e canal
+- **Autenticação & Autorização**: API Gateway com JWT e rate limiting
+- **Resiliência**: Circuit Breaker, Retry e Fallback configuráveis
+- **Event Sourcing**: Auditoria completa de eventos via Kafka
+- **Observabilidade**: Tracing distribuído, métricas e dashboards
+- **Alta Performance**: Cache Redis e otimizações para ~2000 TPS
 
 ## 🏗️ Arquitetura
+
 ```
 ┌─────────────┐
 │   Cliente   │
@@ -25,9 +25,9 @@ Sistema desenvolvido como Projeto Aplicado da Pós-Graduação em Arquitetura de
        │ HTTPS + JWT
        ▼
 ┌────────────────────────────────────────┐
-│       API Gateway (8081)               │
+│       API Gateway (:8081)              │
 │  • Autenticação JWT                    │
-│  • Roteamento                          │
+│  • Roteamento Dinâmico                 │
 │  • Circuit Breaker                     │
 │  • Rate Limiting                       │
 └────┬──────────────────┬────────────────┘
@@ -35,10 +35,24 @@ Sistema desenvolvido como Projeto Aplicado da Pós-Graduação em Arquitetura de
      ▼                  ▼
 ┌──────────────┐   ┌──────────────┐
 │Notification  │   │Quota Service │
-│Core (8082)   │   │   (8083)     │
-└──────┬───────┘   └──────┬───────┘
-       │                  │
-       ▼                  ▼
+│Core (:8082)  │◄──┤   (:8083)    │
+└──────┬───────┘   └──────────────┘
+       │
+       ▼
+┌──────────────────────────────────┐
+│    Provider Layer (Consumers)     │
+│  • provider-push  • provider-sms  │
+│  • provider-email                 │
+└──────────────────────────────────┘
+       │
+       ▼
+┌──────────────────────────────────┐
+│    Event Sourcing & Audit         │
+│  • audit-service                  │
+│  • Event Store (PostgreSQL)       │
+└──────────────────────────────────┘
+       │
+       ▼
 ┌─────────────────────────────────┐
 │     Infraestrutura              │
 │  • Kafka (mensageria)           │
@@ -46,165 +60,220 @@ Sistema desenvolvido como Projeto Aplicado da Pós-Graduação em Arquitetura de
 │  • MongoDB (templates)          │
 │  • Redis (cache)                │
 │  • WireMock (mocks)             │
+│  • Prometheus + Grafana         │
 └─────────────────────────────────┘
 ```
+
+### Fluxo de Comunicação
+
+1. **Cliente** → Autentica via API Gateway (JWT)
+2. **API Gateway** → Roteia para Notification Core
+3. **Notification Core** → Valida quota disponível (Quota Service)
+4. **Notification Core** → Publica evento no Kafka
+5. **Providers** → Consomem eventos e enviam notificações
+6. **Audit Service** → Persiste eventos para auditoria
 
 ## 🚀 Quick Start
 
 ### Pré-requisitos
 
-- Docker 20+
-- Docker Compose 2+
-- Java 21 (opcional, para desenvolvimento local)
-- Maven 3.9+ (opcional, para desenvolvimento local)
+- **Docker** 20+ e **Docker Compose** 2+
+- *Opcional:* Java 21 e Maven 3.9+ para desenvolvimento local
 
-### Subir Todo o Sistema
+### Execução Completa
+
 ```bash
-# Clone o repositório
-git clone https://github.com/thiagosv/notificacao-pos.git
-cd notification-system
-
-# Subir todos os serviços
+# Subir toda a infraestrutura e serviços
 docker-compose up -d
 
-# Verificar status
+# Verificar status dos containers
 docker-compose ps
 
-# Ver logs
+# Acompanhar logs em tempo real
 docker-compose logs -f
+
+# Parar todos os serviços
+docker-compose down
+
+# Remover volumes (reset completo)
+docker-compose down -v
 ```
 
-### Acessar os Serviços
+### Build e Execução Local (Desenvolvimento)
 
-| Serviço | URL | Porta |
-|---------|-----|-------|
-| API Gateway | http://localhost:8081 | 8081 |
-| Quota Service | http://localhost:8083 | 8083 |
-| PostgreSQL | localhost | 5432 |
-| Redis | localhost | 6379 |
-| MongoDB | localhost | 27017 |
-| Kafka | localhost | 9093 |
-| WireMock | http://localhost:8080 | 8080 |
-| Prometheus | http://localhost:9090 | 9090 |
-| Grafana | http://localhost:3000 | 3000 |
+```bash
+# Build de todos os módulos
+mvn clean install -DskipTests
+
+# Rodar serviço específico
+cd services/api-gateway
+mvn spring-boot:run
+
+# Rodar com perfil específico
+mvn spring-boot:run -Dspring-boot.run.profiles=dev
+```
+
+### Endpoints Principais
+
+| Serviço | URL | Porta | Health Check |
+|---------|-----|-------|--------------|
+| API Gateway | http://localhost:8081 | 8081 | /actuator/health |
+| Notification Core | http://localhost:8082 | 8082 | /actuator/health |
+| Quota Service | http://localhost:8083 | 8083 | /actuator/health |
+| Kafka UI | http://localhost:8888 | 8888 | - |
+| Prometheus | http://localhost:9090 | 9090 | - |
+| Grafana | http://localhost:3000 | 3000 | - |
+| WireMock (Mocks) | http://localhost:8080 | 8080 | /__admin |
+
+### Testando a API
+
+```bash
+# 1. Autenticação (obter JWT)
+curl -X POST http://localhost:8081/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"clientId":"demo-client","password":"demo123"}'
+
+# Resposta: { "token": "eyJhbGc...", "expiresIn": 3600 }
+
+# 2. Criar notificação (usando o token)
+curl -X POST http://localhost:8081/api/notifications \
+  -H "Authorization: Bearer {SEU_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "clientId": "demo-client",
+    "channel": "SMS",
+    "recipient": "+5511999999999",
+    "message": "Teste de notificação"
+  }'
+
+# 3. Consultar quota
+curl -X GET http://localhost:8081/api/quotas/demo-client/SMS \
+  -H "Authorization: Bearer {SEU_TOKEN}"
+```
 
 ## 📦 Estrutura do Projeto
+
 ```
-notification-system/
-├── services/
-│   ├── api-gateway/          # Gateway com autenticação
-│   ├── quota-service/        # Controle de cotas
-│   ├── notification-core/    # Orquestrador (Sprint 2)
-│   ├── provider-email/       # Provider Email (Sprint 2)
-│   ├── provider-sms/         # Provider SMS (Sprint 2)
-│   ├── provider-push/        # Provider Push (Sprint 2)
-│   ├── event-store-service/  # Event Sourcing (Sprint 3)
-│   └── query-service/        # CQRS Query (Sprint 3)
+notificacao-pos/
+├── services/                      # Microsserviços
+│   ├── api-gateway/              # Gateway de autenticação e roteamento
+│   ├── notification-core/        # Orquestrador de notificações
+│   ├── quota-service/            # Gerenciamento de cotas
+│   ├── provider-push/            # Consumer para Push Notifications
+│   ├── provider-email/           # Consumer para Email
+│   ├── provider-sms/             # Consumer para SMS
+│   └── audit-service/            # Event Sourcing e Auditoria
 ├── infrastructure/
-│   ├── docker/               # Dockerfiles customizados
-│   ├── observability/        # Prometheus, Grafana, OTEL
-│   └── wiremock/             # Mocks de provedores
+│   ├── docker/                   # Configurações de containers
+│   ├── grafana/                  # Dashboards e provisioning
+│   ├── prometheus/               # Configuração de métricas
+│   ├── kafka/                    # Init scripts para tópicos
+│   └── wiremock/                 # Mocks de provedores externos
 ├── docs/
-│   ├── architecture/         # Diagramas e ADRs
-│   ├── postman/              # Collections
-│   └── sprint-reports/       # Evidências das sprints
-├── scripts/                  # Scripts úteis
-├── docker-compose.yml
-├── pom.xml                   # Parent POM
-└── README.md
+│   ├── arquitetura/              # Diagramas e documentação
+│   ├── postman/                  # Collections de API
+│   └── sprint-reports/           # Evidências de sprints
+├── scripts/
+│   ├── performance-test.js       # Testes de carga (K6)
+│   └── docker-start.sh           # Scripts auxiliares
+├── docker-compose.yml            # Orquestração completa
+└── pom.xml                       # Parent POM (multi-module)
 ```
 
-## 🛠️ Stack Tecnológico
+## 🛠️ Stack Tecnológica
 
-### Backend
-- **Java 21**
-- **Spring Boot 3.5.7**
-- **Spring Cloud Gateway**
-- **Spring Security + JWT**
-- **Spring Data JPA**
-- **Spring Kafka**
+### Backend & Frameworks
+- **Java 21** - LTS com Virtual Threads
+- **Spring Boot 3.5.7** - Framework base
+- **Spring Cloud Gateway** - API Gateway reativo
+- **Spring Security** - Autenticação JWT
+- **Spring Data JPA** - Persistência
+- **Spring Kafka** - Integração com Kafka
 
-### Infraestrutura
-- **PostgreSQL 15** - Banco transacional
-- **MongoDB 7** - Templates e documentos
-- **Redis 7** - Cache e rate limiting
-- **Apache Kafka 3.x** - Mensageria
-- **WireMock 3** - Mocks
+### Infraestrutura & Persistência
+- **PostgreSQL 15** - Banco transacional (notificações, quotas, eventos)
+- **MongoDB 7** - Armazenamento de templates
+- **Redis 7** - Cache distribuído e rate limiting
+- **Apache Kafka 3.x** - Mensageria assíncrona
+- **Zookeeper** - Coordenação do Kafka
 
-### Resiliência e Observabilidade
-- **Resilience4j** - Circuit Breaker, Retry, Rate Limiter
-- **OpenTelemetry** - Tracing distribuído
-- **Prometheus** - Métricas
-- **Grafana** - Visualização
-- **Flyway** - Migrações de banco
+### Resiliência & Observabilidade
+- **Resilience4j** - Circuit Breaker, Retry, Rate Limiter, Bulkhead
+- **Micrometer** - Métricas da aplicação
+- **Prometheus** - Coleta de métricas
+- **Grafana** - Dashboards e visualização
+- **OpenTelemetry** - Tracing distribuído (preparado)
 
-## 📊 Roadmap de Sprints
+### DevOps & Testes
+- **Docker & Docker Compose** - Containerização
+- **Flyway** - Migrações de banco de dados
+- **WireMock 3** - Mocks de APIs externas
+- **K6** - Testes de performance
+- **JUnit 5 & Mockito** - Testes unitários
 
-### ✅ Sprint 1 (Concluída)
-- [x] Infraestrutura completa via Docker Compose
-- [x] API Gateway com autenticação JWT
-- [x] Quota Service com cache Redis
-- [x] Circuit Breaker e Fallback
-- [x] Persistência PostgreSQL + Flyway
+## 🧪 Testes de Performance
 
-### 🚧 Sprint 2 (Em Andamento)
-- [x] Notification Core Service
-- [x] Provider Email (WireMock)
-- [x] Provider SMS (WireMock)
-- [x] Provider Push (WireMock)
-- [x] Observabilidade completa (OTEL + Prometheus + Grafana)
-- [x] Testes de carga
+O projeto inclui scripts de teste de carga com K6:
 
-### 📅 Sprint 3 (Planejada)
-- [ ] Event Sourcing com Kafka
-- [ ] CQRS (Command/Query Separation)
-- [ ] Query Service
-- [ ] Templates MongoDB
-- [ ] Dashboard Grafana com métricas de negócio
-- [ ] Documentação completa
+```bash
+# Instalar K6 (Linux/macOS)
+curl https://github.com/grafana/k6/releases/download/v0.47.0/k6-v0.47.0-linux-amd64.tar.gz -L | tar xvz
 
-## 📚 Documentação Detalhada
+# Executar teste de carga
+cd scripts
+k6 run performance-test.js
 
-- [API Gateway](services/api-gateway/README.md)
-- [Quota Service](services/quota-service/README.md)
-- [Arquitetura](docs/architecture/README.md)
-- [Diagramas de Sequência](docs/architecture/diagrams/)
+# Teste customizado
+k6 run --vus 100 --duration 120s performance-test.js
+```
 
-## 📊 Métricas e Monitoramento
+**Configuração do Teste:**
+- Ramp-up progressivo: 0 → 200 VUs
+- Duração total: ~6 minutos
+- Throughput esperado: **~2000 TPS** no pico
 
-### Grafana
+## 📊 Observabilidade
 
-Acesse: http://localhost:3000
-- User: `admin`
-- Password: `admin123`
+### Grafana Dashboards
 
-Dashboards disponíveis:
-- Business Metrics
-- Technical Metrics
-- Circuit Breakers Status
+Acesse: **http://localhost:3000**
+- **Usuário:** `admin`
+- **Senha:** `admin123`
 
-## 🔒 Segurança
+**Dashboards Disponíveis:**
+- Business Metrics (notificações por canal, taxa de sucesso)
+- Technical Metrics (latência, throughput, erros)
+- Circuit Breaker Status
 
-### Credenciais Padrão (DEV APENAS)
+### Prometheus
 
-**API Gateway:**
-- Client ID: `demo-client`
-- Password: `demo123`
+Acesse: **http://localhost:9090**
 
-**PostgreSQL:**
-- User: `notification`
-- Password: `notification123`
-- Database: `notification_db`
+**Métricas Disponíveis:**
+- `notification_sent_total` - Total de notificações enviadas
+- `notification_failed_total` - Total de falhas
+- `http_server_requests_seconds` - Métricas HTTP
 
-**MongoDB:**
-- User: `notification`
-- Password: `notification123`
+## 🔒 Configurações de Segurança
 
-**Grafana:**
-- User: `admin`
-- Password: `admin123`
+### Credenciais Padrão (Ambiente de Desenvolvimento)
 
-⚠️ **IMPORTANTE:** Trocar todas as credenciais em produção!
+⚠️ **ATENÇÃO:** Alterar em produção!
+
+| Serviço | Usuário | Senha | Database |
+|---------|---------|-------|----------|
+| PostgreSQL | `notification` | `notification123` | `notification_db` |
+| MongoDB | `notification` | `notification123` | `notification_templates` |
+| Grafana | `admin` | `admin123` | - |
+| API (Demo) | `demo-client` | `demo123` | - |
+
+### JWT Configuration
+
+```yaml
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: 3600  # 1 hora
+```
 
 ## 🎓 Contexto Acadêmico
 
@@ -212,27 +281,32 @@ Dashboards disponíveis:
 - **Curso:** Pós-Graduação em Arquitetura de Software e Soluções
 - **Instituição:** XP Educação
 - **Autor:** Thiago Vieira
-- **Período:** Novembro 2025 - Dezembro 2025
+- **Período:** Março 2025 - Dezembro 2026
 
-### Conceitos Aplicados
+### Padrões e Conceitos Implementados
 
-- Microsserviços
-- Event Sourcing
-- CQRS
-- Circuit Breaker Pattern
-- API Gateway Pattern
-- Cache-Aside Pattern
-- Repository Pattern
-- Observabilidade (Three Pillars)
+- **Microsserviços** - Arquitetura distribuída com serviços independentes
+- **API Gateway Pattern** - Ponto único de entrada com autenticação
+- **Event Sourcing** - Auditoria completa via eventos imutáveis
+- **CQRS** - Separação de comandos e consultas (preparado)
+- **Circuit Breaker** - Prevenção de falhas em cascata
+- **Cache-Aside** - Otimização de leitura com Redis
+- **Retry Pattern** - Resiliência em comunicações
+- **Bulkhead Pattern** - Isolamento de recursos
+- **Observability** - Logs, Métricas e Tracing
 
-## 🤝 Contribuição
+## 📚 Documentação Adicional
 
-Este é um projeto acadêmico. Sugestões e melhorias são bem-vindas via issues.
+- [Arquitetura Detalhada](docs/arquitetura/componentes.md)
+- [API Gateway](services/api-gateway/README.md)
+- [Quota Service](services/quota-service/README.md)
+- [Testes de Performance](scripts/README-PERFORMANCE.md)
+- [Sprint Reports](docs/sprint-reports/)
 
 ## 📄 Licença
 
-Projeto acadêmico - Todos os direitos reservados.
+Projeto acadêmico desenvolvido para fins educacionais.
 
 ---
 
-**Desenvolvido durante a Pós-Graduação XP Educação**
+**Desenvolvido como Projeto Aplicado - Pós-Graduação XP Educação**
