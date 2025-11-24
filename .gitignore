@@ -1,8 +1,2 @@
-/services/api-gateway/target/
-/services/notification-core/target/
-/services/quota-service/target/
 /.idea/
-/services/provider-push/target/
-/services/provider-email/target/
-/services/provider-sms/target/
-/services/audit-service/target/
+services/**/target/*
