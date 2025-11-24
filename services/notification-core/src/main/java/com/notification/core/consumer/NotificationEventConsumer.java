@@ -2,6 +2,7 @@ package com.notification.core.consumer;
 
 import com.notification.core.dto.NotificationFailedEvent;
 import com.notification.core.dto.NotificationSentEvent;
+import com.notification.core.metrics.MetricsService;
 import com.notification.core.model.Notification;
 import com.notification.core.model.NotificationStatus;
 import com.notification.core.service.NotificationOrchestrator;
@@ -22,6 +23,7 @@ public class NotificationEventConsumer {
 
     private final NotificationService notificationService;
     private final NotificationOrchestrator notificationOrchestrator;
+    private final MetricsService metricsService;
 
     @KafkaListener(
             topics = "${kafka.topics.notification-sent}",
@@ -61,7 +63,10 @@ public class NotificationEventConsumer {
             if (notification.getStatus() == NotificationStatus.RETRYING) {
                 log.info("Republishing notification for retry: id={}, retryCount={}",
                         notification.getId(), notification.getRetryCount());
-                notificationOrchestrator.publishNotificationEvent(notification);
+                notificationOrchestrator.publishCreatedNotificationEvent(notification);
+            } else {
+                notificationOrchestrator.publishDlqNotificationEvent(notification);
+                metricsService.incrementDlq(notification.getChannel(), "max_retries_exceeded");
             }
 
             if (acknowledgment != null)

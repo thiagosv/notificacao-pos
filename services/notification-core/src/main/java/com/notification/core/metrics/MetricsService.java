@@ -63,6 +63,36 @@ public class MetricsService {
         log.debug("Metric incremented: notification_total [channel={}, provider={}, cost={}]", channel, provider, cost);
     }
 
+    public void incrementRetry(Channel channel, String attemptNumber) {
+        String cacheKey = buildCacheKey(channel, attemptNumber);
+
+        Counter counter = counterCache.computeIfAbsent(cacheKey, key ->
+                Counter.builder("notification_retry_total")
+                        .description("Total de tentativas de reenvio por canal e número de tentativas")
+                        .tag("channel", normalize(channel))
+                        .tag("attemptNumber", normalize(attemptNumber))
+                        .register(meterRegistry)
+        );
+
+        counter.increment();
+        log.debug("Metric incremented: notification_retry_total [channel={}, attemptNumber={}]", channel, attemptNumber);
+    }
+
+    public void incrementDlq(Channel channel, String reason) {
+        String cacheKey = buildCacheKeyDlq(channel, reason);
+
+        Counter counter = counterCache.computeIfAbsent(cacheKey, key ->
+                Counter.builder("notification_dlq_total")
+                        .description("Total de notificações enviadas para DLQ por canal e motivo")
+                        .tag("channel", normalize(channel))
+                        .tag("reason", normalize(reason))
+                        .register(meterRegistry)
+        );
+
+        counter.increment();
+        log.debug("Metric incremented: notification_dlq_total [channel={}, reason={}]", channel, reason);
+    }
+
     public void recordLatency(Channel channel, String provider, Duration duration) {
         meterRegistry.timer("notification.delivery.time",
                 Tags.of(
@@ -110,6 +140,20 @@ public class MetricsService {
                 normalize(channel),
                 provider,
                 cost
+        );
+    }
+
+    private String buildCacheKey(Channel channel, String valor) {
+        return "notification_retry_total_%s_%s".formatted(
+                normalize(channel),
+                valor
+        );
+    }
+
+    private String buildCacheKeyDlq(Channel channel, String valor) {
+        return "notification_dlq_total_%s_%s".formatted(
+                normalize(channel),
+                valor
         );
     }
 

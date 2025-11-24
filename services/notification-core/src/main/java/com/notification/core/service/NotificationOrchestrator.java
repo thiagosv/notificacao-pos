@@ -30,6 +30,9 @@ public class NotificationOrchestrator {
     @Value("${kafka.topics.notification-created}")
     private String notificactionCreatedTopic;
 
+    @Value("${kafka.topics.notification-failed-dlq}")
+    private String notificactionDlqTopic;
+
     @Transactional
     public NotificationResponse sendNotification(NotificationRequest request) {
         log.info("Processing notification request: idempotencyKey={}, clientId={}, channel={}",
@@ -61,14 +64,14 @@ public class NotificationOrchestrator {
 
         idempotencyService.register(request.getIdempotencyKey(), notification.getId());
 
-        publishNotificationEvent(notification);
+        publishNotificationEvent(notification, notificactionCreatedTopic);
 
         log.info("Notification successfully processed: id={}, status={}", notification.getId(), notification.getStatus());
 
         return NotificationResponse.of(notification);
     }
 
-    public void publishNotificationEvent(Notification notification) {
+    public void publishNotificationEvent(Notification notification, String notificactionCreatedTopic) {
         try {
             NotificationEvent event = NotificationEvent.of(notification);
             Message<NotificationEvent> message = MessageBuilder
@@ -94,6 +97,14 @@ public class NotificationOrchestrator {
         } catch (Exception e) {
             log.error("Error publishing notification event: id={}, error={}", notification.getId(), e.getMessage(), e);
         }
+    }
+
+    public void publishCreatedNotificationEvent(Notification notification) {
+        publishNotificationEvent(notification, notificactionCreatedTopic);
+    }
+
+    public void publishDlqNotificationEvent(Notification notification) {
+        publishNotificationEvent(notification, notificactionDlqTopic);
     }
 }
 

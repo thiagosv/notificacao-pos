@@ -111,6 +111,8 @@ public class NotificationService {
         } else {
             notification.setStatus(NotificationStatus.RETRYING);
             log.info("Notification will be retried: id={}, retryCount={}", notificationId, notification.getRetryCount());
+
+            metricsService.incrementRetry(notification.getChannel(), String.valueOf(notification.getRetryCount()));
         }
 
         return notificationRepository.save(notification);

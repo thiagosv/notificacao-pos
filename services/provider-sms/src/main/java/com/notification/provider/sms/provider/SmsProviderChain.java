@@ -2,6 +2,7 @@ package com.notification.provider.sms.provider;
 
 import com.notification.provider.sms.dto.SmsRequest;
 import com.notification.provider.sms.dto.SmsResponse;
+import com.notification.provider.sms.metrics.MetricsService;
 import com.notification.provider.sms.provider.impl.AwsSnsSmsProvider;
 import com.notification.provider.sms.provider.impl.TwilioSmsProvider;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
@@ -19,16 +20,19 @@ public class SmsProviderChain {
     private final AwsSnsSmsProvider secondaryProvider;
     private final CircuitBreaker primaryCircuitBreaker;
     private final CircuitBreaker secondaryCircuitBreaker;
+    private final MetricsService metricsService;
 
     public SmsProviderChain(
             TwilioSmsProvider primaryProvider,
             AwsSnsSmsProvider secondaryProvider,
-            CircuitBreakerRegistry circuitBreakerRegistry) {
+            CircuitBreakerRegistry circuitBreakerRegistry,
+            MetricsService metricsService) {
 
         this.primaryProvider = primaryProvider;
         this.secondaryProvider = secondaryProvider;
         this.primaryCircuitBreaker = circuitBreakerRegistry.circuitBreaker("sms-primary");
         this.secondaryCircuitBreaker = circuitBreakerRegistry.circuitBreaker("sms-secondary");
+        this.metricsService = metricsService;
 
         configureCircuitBreakerEvents();
     }
@@ -61,6 +65,7 @@ public class SmsProviderChain {
             SmsResponse response = executeWithCircuitBreaker(secondaryCircuitBreaker, () -> secondaryProvider.send(request));
 
             log.info("✅ SMS sent successfully via SECONDARY provider (FALLBACK)");
+            metricsService.incrementFallback(primaryProvider.getProviderName(), secondaryProvider.getProviderName());
             return response;
         } catch (Exception e) {
             log.error("❌ SECONDARY provider also failed: {}", e.getMessage());

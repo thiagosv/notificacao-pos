@@ -2,6 +2,7 @@ package com.notification.provider.push.provider;
 
 import com.notification.provider.push.dto.PushRequest;
 import com.notification.provider.push.dto.PushResponse;
+import com.notification.provider.push.metrics.MetricsService;
 import com.notification.provider.push.provider.impl.FirebaseFcmPushProvider;
 import com.notification.provider.push.provider.impl.OneSignalPushProvider;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
@@ -19,16 +20,19 @@ public class PushProviderChain {
     private final OneSignalPushProvider secondaryProvider;
     private final CircuitBreaker primaryCircuitBreaker;
     private final CircuitBreaker secondaryCircuitBreaker;
+    private final MetricsService metricsService;
 
     public PushProviderChain(
             FirebaseFcmPushProvider primaryProvider,
             OneSignalPushProvider secondaryProvider,
-            CircuitBreakerRegistry circuitBreakerRegistry) {
+            CircuitBreakerRegistry circuitBreakerRegistry,
+            MetricsService metricsService) {
 
         this.primaryProvider = primaryProvider;
         this.secondaryProvider = secondaryProvider;
         this.primaryCircuitBreaker = circuitBreakerRegistry.circuitBreaker("push-primary");
         this.secondaryCircuitBreaker = circuitBreakerRegistry.circuitBreaker("push-secondary");
+        this.metricsService = metricsService;
 
         configureCircuitBreakerEvents();
     }
@@ -58,6 +62,7 @@ public class PushProviderChain {
             PushResponse response = executeWithCircuitBreaker(secondaryCircuitBreaker, () -> secondaryProvider.send(request));
 
             log.info("✅ Push sent successfully via SECONDARY provider (FALLBACK)");
+            metricsService.incrementFallback(primaryProvider.getProviderName(), secondaryProvider.getProviderName());
             return response;
         } catch (Exception e) {
             log.error("❌ SECONDARY provider also failed: {}", e.getMessage());

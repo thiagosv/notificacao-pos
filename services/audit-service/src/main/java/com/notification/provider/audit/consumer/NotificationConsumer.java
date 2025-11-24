@@ -2,6 +2,8 @@ package com.notification.provider.audit.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.notification.provider.audit.dto.NotificationDto;
+import com.notification.provider.audit.mapper.NotificationMapper;
+import com.notification.provider.audit.metrics.MetricsService;
 import com.notification.provider.audit.service.AuditNotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +20,7 @@ public class NotificationConsumer {
 
     private final AuditNotificationService auditNotificationService;
     private final ObjectMapper objectMapper;
+    private final MetricsService metricsService;
 
     @KafkaListener(
             topics = "#{'${kafka.topics.notification}'.split(',')}",
@@ -34,6 +37,8 @@ public class NotificationConsumer {
             ack.acknowledge();
             log.info("Audit Notification processed successfully: id={}, topic={}, timestamp={}",
                     notification.notificationId(), topic, timestamp);
+
+            metricsService.incrementEventStored(NotificationMapper.statusFromTopic(topic));
         } catch (Exception e) {
             log.error("Failed to process message from topic [{}]: message=[{}], error={}", topic, event, e.getMessage());
             ack.acknowledge();

@@ -2,6 +2,7 @@ package com.notification.provider.email.provider;
 
 import com.notification.provider.email.dto.EmailRequest;
 import com.notification.provider.email.dto.EmailResponse;
+import com.notification.provider.email.metrics.MetricsService;
 import com.notification.provider.email.provider.impl.AmazonSesEmailProvider;
 import com.notification.provider.email.provider.impl.SendGridEmailProvider;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
@@ -19,16 +20,19 @@ public class EmailProviderChain {
     private final AmazonSesEmailProvider secondaryProvider;
     private final CircuitBreaker primaryCircuitBreaker;
     private final CircuitBreaker secondaryCircuitBreaker;
+    private final MetricsService metricsService;
 
     public EmailProviderChain(
             SendGridEmailProvider primaryProvider,
             AmazonSesEmailProvider secondaryProvider,
-            CircuitBreakerRegistry circuitBreakerRegistry) {
+            CircuitBreakerRegistry circuitBreakerRegistry,
+            MetricsService metricsService) {
 
         this.primaryProvider = primaryProvider;
         this.secondaryProvider = secondaryProvider;
         this.primaryCircuitBreaker = circuitBreakerRegistry.circuitBreaker("email-primary");
         this.secondaryCircuitBreaker = circuitBreakerRegistry.circuitBreaker("email-secondary");
+        this.metricsService = metricsService;
 
         configureCircuitBreakerEvents();
     }
@@ -59,8 +63,8 @@ public class EmailProviderChain {
             EmailResponse response = executeWithCircuitBreaker(secondaryCircuitBreaker, () -> secondaryProvider.send(request));
 
             log.info("✅ Email sent successfully via SECONDARY provider (FALLBACK)");
+            metricsService.incrementFallback(primaryProvider.getProviderName(), secondaryProvider.getProviderName());
             return response;
-
         } catch (Exception e) {
             log.error("❌ SECONDARY provider also failed: {}", e.getMessage());
             throw new RuntimeException("All Email providers failed", e);
