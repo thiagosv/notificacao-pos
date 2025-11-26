@@ -230,6 +230,7 @@ services:
       NOTIFICATION_SERVICE_URI: http://notification-core:8080
       QUOTA_SERVICE_URI: http://quota-service:8080
       AUDIT_SERVICE_URI: http://audit-service:8080
+      TEMPLATE_SERVICE_URI: http://template-service:8080
     networks:
       - notification-network
     depends_on:
@@ -239,45 +240,16 @@ services:
         condition: service_healthy
       quota-service:
         condition: service_healthy
+      audit-service:
+        condition: service_healthy
+      template-service:
+        condition: service_healthy
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8081/actuator/health" ]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
-    restart: unless-stopped
-
-  quota-service:
-    build:
-      context: .
-      dockerfile: services/quota-service/Dockerfile
-    container_name: notification-quota-service
-    ports:
-      - "8083:8080"
-    environment:
-      SERVER_PORT: 8080
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      POSTGRESQL_HOST: postgres
-      POSTGRESQL_USER: quota
-      POSTGRESQL_PASS: quota123
-      POSTGRESQL_DB: quota_db
-      KAFKA_BOOTSTRAP: kafka:9092
-    networks:
-      - notification-network
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      kafka:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/actuator/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
     restart: unless-stopped
 
   notification-core:
@@ -308,6 +280,39 @@ services:
       kafka:
         condition: service_healthy
       quota-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+
+  quota-service:
+    build:
+      context: .
+      dockerfile: services/quota-service/Dockerfile
+    container_name: notification-quota-service
+    ports:
+      - "8083:8080"
+    environment:
+      SERVER_PORT: 8080
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      POSTGRESQL_HOST: postgres
+      POSTGRESQL_USER: quota
+      POSTGRESQL_PASS: quota123
+      POSTGRESQL_DB: quota_db
+      KAFKA_BOOTSTRAP: kafka:9092
+    networks:
+      - notification-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/actuator/health"]
@@ -403,6 +408,8 @@ services:
       context: .
       dockerfile: services/audit-service/Dockerfile
     container_name: notification-audit-service
+    ports:
+      - "8084:8080"
     environment:
       SERVER_PORT: 8080
       KAFKA_BOOTSTRAP: kafka:9092
@@ -435,6 +442,8 @@ services:
       context: .
       dockerfile: services/template-service/Dockerfile
     container_name: notification-template-service
+    ports:
+      - "8085:8080"
     environment:
       SERVER_PORT: 8080
       POSTGRESQL_HOST: postgres

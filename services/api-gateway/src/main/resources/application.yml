@@ -70,6 +70,18 @@ spring:
                 name: auditCircuitBreaker
                 fallbackUri: forward:/fallback/audit
 
+        # Audit Service
+        - id: template-service
+          uri: ${TEMPLATE_SERVICE_URI:http://localhost:8085}
+          predicates:
+            - Path=/api/template/**
+          filters:
+            - RewritePath=/api/template/(?<segment>.*), /${segment}
+            - name: CircuitBreaker
+              args:
+                name: templateCircuitBreaker
+                fallbackUri: forward:/fallback/template
+
       # Global CORS Configuration
       globalcors:
         cors-configurations:

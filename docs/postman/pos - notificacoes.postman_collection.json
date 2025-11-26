@@ -1,1621 +1,2504 @@
 {
-	"info": {
-		"_postman_id": "ed68e903-959b-4a17-9cba-aeca71b4ef27",
-		"name": "pos - notificacoes",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "3777837"
-	},
-	"item": [
-		{
-			"name": "Gateway",
-			"item": [
-				{
-					"name": "apis",
-					"item": [
-						{
-							"name": "Quotas",
-							"item": [
-								{
-									"name": "uso",
-									"item": [
-										{
-											"name": "Detalhes",
-											"request": {
-												"method": "GET",
-												"header": [],
-												"url": {
-													"raw": "{{quota_host}}/quotas/:clientId",
-													"host": [
-														"{{quota_host}}"
-													],
-													"path": [
-														"quotas",
-														":clientId"
-													],
-													"variable": [
-														{
-															"key": "clientId",
-															"value": "demo-client"
-														}
-													]
-												}
-											},
-											"response": []
-										},
-										{
-											"name": "Detalhes por canal",
-											"request": {
-												"method": "GET",
-												"header": [],
-												"url": {
-													"raw": "{{quota_host}}/quotas/:clientId/:canal",
-													"host": [
-														"{{quota_host}}"
-													],
-													"path": [
-														"quotas",
-														":clientId",
-														":canal"
-													],
-													"variable": [
-														{
-															"key": "clientId",
-															"value": "demo-client"
-														},
-														{
-															"key": "canal",
-															"value": "EMAIL"
-														}
-													]
-												}
-											},
-											"response": []
-										},
-										{
-											"name": "Valida e consome",
-											"request": {
-												"method": "POST",
-												"header": [],
-												"body": {
-													"mode": "raw",
-													"raw": "{\r\n    \"clientId\": \"demo-client\",\r\n    \"channel\": \"EMAIL\",\r\n    \"amount\": 33,\r\n    \"notificationId\": \"test-001\"\r\n}",
-													"options": {
-														"raw": {
-															"language": "json"
-														}
-													}
-												},
-												"url": {
-													"raw": "{{quota_host}}/quotas/validate",
-													"host": [
-														"{{quota_host}}"
-													],
-													"path": [
-														"quotas",
-														"validate"
-													]
-												}
-											},
-											"response": []
-										},
-										{
-											"name": "Valida",
-											"request": {
-												"method": "POST",
-												"header": [],
-												"body": {
-													"mode": "raw",
-													"raw": "{\r\n    \"clientId\": \"demo-client\",\r\n    \"channel\": \"EMAIL\",\r\n    \"amount\": 5,\r\n    \"notificationId\": \"test-001\"\r\n  }",
-													"options": {
-														"raw": {
-															"language": "json"
-														}
-													}
-												},
-												"url": {
-													"raw": "{{quota_host}}/quotas/check",
-													"host": [
-														"{{quota_host}}"
-													],
-													"path": [
-														"quotas",
-														"check"
-													]
-												}
-											},
-											"response": []
-										},
-										{
-											"name": "Aumenta quota",
-											"request": {
-												"method": "POST",
-												"header": [],
-												"url": {
-													"raw": "{{quota_host}}/quotas/release?clientId=demo-client&channel=EMAIL&amount=200&notificationId=test-notif-001",
-													"host": [
-														"{{quota_host}}"
-													],
-													"path": [
-														"quotas",
-														"release"
-													],
-													"query": [
-														{
-															"key": "clientId",
-															"value": "demo-client"
-														},
-														{
-															"key": "channel",
-															"value": "EMAIL"
-														},
-														{
-															"key": "amount",
-															"value": "200"
-														},
-														{
-															"key": "notificationId",
-															"value": "test-notif-001"
-														}
-													]
-												}
-											},
-											"response": []
-										}
-									]
-								},
-								{
-									"name": "admin",
-									"item": [
-										{
-											"name": "Cria",
-											"request": {
-												"method": "POST",
-												"header": [],
-												"body": {
-													"mode": "raw",
-													"raw": "{\r\n    \"clientId\": \"demo-client\",\r\n    \"channel\": \"SMS\",\r\n    \"totalQuota\": 200\r\n  }",
-													"options": {
-														"raw": {
-															"language": "json"
-														}
-													}
-												},
-												"url": {
-													"raw": "{{quota_host}}/admin/quotas",
-													"host": [
-														"{{quota_host}}"
-													],
-													"path": [
-														"admin",
-														"quotas"
-													]
-												}
-											},
-											"response": []
-										},
-										{
-											"name": "Deleta",
-											"request": {
-												"method": "DELETE",
-												"header": [],
-												"body": {
-													"mode": "raw",
-													"raw": "{\r\n    \"clientId\": \"demo-client\",\r\n    \"channel\": \"EMAIL\",\r\n    \"totalQuota\": 200\r\n  }",
-													"options": {
-														"raw": {
-															"language": "json"
-														}
-													}
-												},
-												"url": {
-													"raw": "{{quota_host}}/admin/quotas/:clientId/:canal",
-													"host": [
-														"{{quota_host}}"
-													],
-													"path": [
-														"admin",
-														"quotas",
-														":clientId",
-														":canal"
-													],
-													"variable": [
-														{
-															"key": "clientId",
-															"value": "demo-client"
-														},
-														{
-															"key": "canal",
-															"value": "EMAIL"
-														}
-													]
-												}
-											},
-											"response": []
-										},
-										{
-											"name": "Atualiza limite",
-											"request": {
-												"method": "PUT",
-												"header": [],
-												"body": {
-													"mode": "raw",
-													"raw": "{\r\n    \"clientId\": \"demo-client\",\r\n    \"channel\": \"EMAIL\",\r\n    \"totalQuota\": 200\r\n  }",
-													"options": {
-														"raw": {
-															"language": "json"
-														}
-													}
-												},
-												"url": {
-													"raw": "{{quota_host}}/admin/quotas/:clientId/:canal?newTotalQuota=1000",
-													"host": [
-														"{{quota_host}}"
-													],
-													"path": [
-														"admin",
-														"quotas",
-														":clientId",
-														":canal"
-													],
-													"query": [
-														{
-															"key": "newTotalQuota",
-															"value": "1000"
-														}
-													],
-													"variable": [
-														{
-															"key": "clientId",
-															"value": "demo-client"
-														},
-														{
-															"key": "canal",
-															"value": "EMAIL"
-														}
-													]
-												}
-											},
-											"response": []
-										},
-										{
-											"name": "Reseta uso",
-											"request": {
-												"method": "POST",
-												"header": [],
-												"body": {
-													"mode": "raw",
-													"raw": "{\r\n    \"clientId\": \"demo-client\",\r\n    \"channel\": \"EMAIL\",\r\n    \"totalQuota\": 200\r\n  }",
-													"options": {
-														"raw": {
-															"language": "json"
-														}
-													}
-												},
-												"url": {
-													"raw": "{{quota_host}}/admin/quotas/:clientId/:canal/reset",
-													"host": [
-														"{{quota_host}}"
-													],
-													"path": [
-														"admin",
-														"quotas",
-														":clientId",
-														":canal",
-														"reset"
-													],
-													"variable": [
-														{
-															"key": "clientId",
-															"value": "demo-client"
-														},
-														{
-															"key": "canal",
-															"value": "EMAIL"
-														}
-													]
-												}
-											},
-											"response": []
-										},
-										{
-											"name": "lista por uso disponivel",
-											"protocolProfileBehavior": {
-												"disableBodyPruning": true
-											},
-											"request": {
-												"method": "GET",
-												"header": [],
-												"body": {
-													"mode": "raw",
-													"raw": "{\r\n    \"clientId\": \"demo-client\",\r\n    \"channel\": \"EMAIL\",\r\n    \"totalQuota\": 200\r\n  }",
-													"options": {
-														"raw": {
-															"language": "json"
-														}
-													}
-												},
-												"url": {
-													"raw": "{{quota_host}}/admin/quotas/near-limit?threshold=1000",
-													"host": [
-														"{{quota_host}}"
-													],
-													"path": [
-														"admin",
-														"quotas",
-														"near-limit"
-													],
-													"query": [
-														{
-															"key": "threshold",
-															"value": "1000"
-														}
-													]
-												}
-											},
-											"response": []
-										}
-									]
-								},
-								{
-									"name": "circuit breeaker",
-									"request": {
-										"method": "GET",
-										"header": [],
-										"url": {
-											"raw": "{{quota_host}}/quotas/:clientId",
-											"host": [
-												"{{quota_host}}"
-											],
-											"path": [
-												"quotas",
-												":clientId"
-											],
-											"variable": [
-												{
-													"key": "clientId",
-													"value": "demo-client"
-												}
-											]
-										}
-									},
-									"response": []
-								},
-								{
-									"name": "Health",
-									"request": {
-										"method": "GET",
-										"header": [],
-										"url": {
-											"raw": "{{quota_host}}/actuator/health",
-											"host": [
-												"{{quota_host}}"
-											],
-											"path": [
-												"actuator",
-												"health"
-											]
-										}
-									},
-									"response": []
-								}
-							],
-							"auth": {
-								"type": "bearer",
-								"bearer": [
-									{
-										"key": "token",
-										"value": "{{access_token}}",
-										"type": "string"
-									}
-								]
-							},
-							"event": [
-								{
-									"listen": "prerequest",
-									"script": {
-										"type": "text/javascript",
-										"packages": {},
-										"requests": {},
-										"exec": [
-											"pm.sendRequest({\r",
-											"    url: 'http://localhost:8081/api/auth/login',\r",
-											"    method: 'POST',\r",
-											"    header: 'Content-Type: application/json',\r",
-											"    body: {\r",
-											"        mode: 'raw',\r",
-											"        raw: JSON.stringify({ clientId: 'demo-client', password: 'demo123' })\r",
-											"    }\r",
-											"}, function (err, response) {\r",
-											"    if (err) {\r",
-											"        console.error(err);\r",
-											"    } else {\r",
-											"        if (response.code === 200) {\r",
-											"            var responseBody = response.json();\r",
-											"            pm.collectionVariables.set('access_token', responseBody.token);\r",
-											"        } else {\r",
-											"            console.error('Failed to login. Response code:', response.code);\r",
-											"        }\r",
-											"    }\r",
-											"});"
-										]
-									}
-								},
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"packages": {},
-										"requests": {},
-										"exec": [
-											""
-										]
-									}
-								}
-							]
-						},
-						{
-							"name": "notificacao",
-							"item": [
-								{
-									"name": "health",
-									"request": {
-										"method": "GET",
-										"header": [],
-										"url": {
-											"raw": "{{notification_host}}/actuator/health",
-											"host": [
-												"{{notification_host}}"
-											],
-											"path": [
-												"actuator",
-												"health"
-											]
-										}
-									},
-									"response": []
-								},
-								{
-									"name": "send",
-									"event": [
-										{
-											"listen": "prerequest",
-											"script": {
-												"exec": [
-													"// const body = pm.request.body.raw;\r",
-													"// const randomInt = _.random(1, 100000);\r",
-													"// body.idempotencyKey = body.idempotencyKey + randomInt\r",
-													"// pm.request.body.raw = body;\r",
-													""
-												],
-												"type": "text/javascript",
-												"packages": {},
-												"requests": {}
-											}
-										}
-									],
-									"request": {
-										"method": "POST",
-										"header": [
-											{
-												"key": "Content-Type",
-												"value": "application/json",
-												"type": "text"
-											}
-										],
-										"body": {
-											"mode": "raw",
-											"raw": "{\r\n    \"idempotencyKey\": \"test-email-{{$randomInt}}\",\r\n    \"clientId\": \"demo-client\",\r\n    \"channel\": \"EMAIL\",\r\n    \"recipient\": \"51999999999\",\r\n    \"subject\": \"Welcome to our platform!\",\r\n    \"content\": \"Hello! This is a test email notification.\",\r\n    \"priority\": \"MEDIUM\",\r\n    \"maxRetries\": 3\r\n  }",
-											"options": {
-												"raw": {
-													"language": "json"
-												}
-											}
-										},
-										"url": {
-											"raw": "{{notification_host}}/notifications/send",
-											"host": [
-												"{{notification_host}}"
-											],
-											"path": [
-												"notifications",
-												"send"
-											]
-										}
-									},
-									"response": []
-								},
-								{
-									"name": "get by ID",
-									"request": {
-										"method": "GET",
-										"header": [],
-										"url": {
-											"raw": "{{notification_host}}/notifications/:id",
-											"host": [
-												"{{notification_host}}"
-											],
-											"path": [
-												"notifications",
-												":id"
-											],
-											"variable": [
-												{
-													"key": "id",
-													"value": "56507a5d-9e56-4f44-b714-d42a0e937689"
-												}
-											]
-										}
-									},
-									"response": []
-								},
-								{
-									"name": "get by Client ID",
-									"request": {
-										"method": "GET",
-										"header": [],
-										"url": {
-											"raw": "{{notification_host}}/notifications/client/demo-client",
-											"host": [
-												"{{notification_host}}"
-											],
-											"path": [
-												"notifications",
-												"client",
-												"demo-client"
-											]
-										}
-									},
-									"response": []
-								},
-								{
-									"name": "stats",
-									"request": {
-										"method": "GET",
-										"header": [],
-										"url": {
-											"raw": "{{notification_host}}/notifications/stats",
-											"host": [
-												"{{notification_host}}"
-											],
-											"path": [
-												"notifications",
-												"stats"
-											]
-										}
-									},
-									"response": []
-								}
-							],
-							"auth": {
-								"type": "bearer",
-								"bearer": [
-									{
-										"key": "token",
-										"value": "{{access_token}}",
-										"type": "string"
-									}
-								]
-							},
-							"event": [
-								{
-									"listen": "prerequest",
-									"script": {
-										"type": "text/javascript",
-										"packages": {},
-										"requests": {},
-										"exec": [
-											"pm.sendRequest({\r",
-											"    url: 'http://localhost:8081/api/auth/login',\r",
-											"    method: 'POST',\r",
-											"    header: 'Content-Type: application/json',\r",
-											"    body: {\r",
-											"        mode: 'raw',\r",
-											"        raw: JSON.stringify({ clientId: 'demo-client', password: 'demo123' })\r",
-											"    }\r",
-											"}, function (err, response) {\r",
-											"    if (err) {\r",
-											"        console.error(err);\r",
-											"    } else {\r",
-											"        if (response.code === 200) {\r",
-											"            var responseBody = response.json();\r",
-											"            pm.collectionVariables.set('access_token', responseBody.token);\r",
-											"        } else {\r",
-											"            console.error('Failed to login. Response code:', response.code);\r",
-											"        }\r",
-											"    }\r",
-											"});"
-										]
-									}
-								},
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"packages": {},
-										"requests": {},
-										"exec": [
-											""
-										]
-									}
-								}
-							]
-						},
-						{
-							"name": "auditoria",
-							"item": [
-								{
-									"name": "health",
-									"request": {
-										"method": "GET",
-										"header": [],
-										"url": {
-											"raw": "{{audit_host}}/actuator/health",
-											"host": [
-												"{{audit_host}}"
-											],
-											"path": [
-												"actuator",
-												"health"
-											]
-										}
-									},
-									"response": []
-								},
-								{
-									"name": "by id",
-									"request": {
-										"method": "GET",
-										"header": [],
-										"url": {
-											"raw": "{{audit_host}}/audit/notifications/969e97a1-4b53-4edd-b6d5-a7bdb792db07",
-											"host": [
-												"{{audit_host}}"
-											],
-											"path": [
-												"audit",
-												"notifications",
-												"969e97a1-4b53-4edd-b6d5-a7bdb792db07"
-											]
-										}
-									},
-									"response": []
-								}
-							],
-							"auth": {
-								"type": "bearer",
-								"bearer": [
-									{
-										"key": "token",
-										"value": "{{access_token}}",
-										"type": "string"
-									}
-								]
-							},
-							"event": [
-								{
-									"listen": "prerequest",
-									"script": {
-										"type": "text/javascript",
-										"packages": {},
-										"requests": {},
-										"exec": [
-											"pm.sendRequest({\r",
-											"    url: 'http://localhost:8081/api/auth/login',\r",
-											"    method: 'POST',\r",
-											"    header: 'Content-Type: application/json',\r",
-											"    body: {\r",
-											"        mode: 'raw',\r",
-											"        raw: JSON.stringify({ clientId: 'demo-client', password: 'demo123' })\r",
-											"    }\r",
-											"}, function (err, response) {\r",
-											"    if (err) {\r",
-											"        console.error(err);\r",
-											"    } else {\r",
-											"        if (response.code === 200) {\r",
-											"            var responseBody = response.json();\r",
-											"            pm.collectionVariables.set('access_token', responseBody.token);\r",
-											"        } else {\r",
-											"            console.error('Failed to login. Response code:', response.code);\r",
-											"        }\r",
-											"    }\r",
-											"});"
-										]
-									}
-								},
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"packages": {},
-										"requests": {},
-										"exec": [
-											""
-										]
-									}
-								}
-							]
-						}
-					]
-				},
-				{
-					"name": "Health",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:8081/actuator/health",
-							"host": [
-								"localhost"
-							],
-							"port": "8081",
-							"path": [
-								"actuator",
-								"health"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Auth - Login",
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"clientId\": \"demo-client\",\n    \"password\": \"demo123\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8081/api/auth/login",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8081",
-							"path": [
-								"api",
-								"auth",
-								"login"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Auth - Validate",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzY29wZXMiOlsibm90aWZpY2F0aW9uOnNlbmQiLCJxdW90YTpyZWFkIl0sImNsaWVudElkIjoiZGVtby1jbGllbnQiLCJzdWIiOiJkZW1vLWNsaWVudCIsImlzcyI6Im5vdGlmaWNhdGlvbi1zeXN0ZW0iLCJhdWQiOlsibm90aWZpY2F0aW9uLWNsaWVudHMiXSwiaWF0IjoxNzYyNzEyMjQ0LCJleHAiOjE3NjI3MTU4NDR9._sAU11X0zgME7xI9zg9OWnbXCtaDpssvJYK9JkdnJDmhTPRHmA-lNVdyvXZFHGFB21g2LJFyd93QLAnUAaD_Fg",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "http://localhost:8081/api/auth/validate",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8081",
-							"path": [
-								"api",
-								"auth",
-								"validate"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Test - Authenticated",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzY29wZXMiOlsibm90aWZpY2F0aW9uOnNlbmQiLCJxdW90YTpyZWFkIl0sImNsaWVudElkIjoiZGVtby1jbGllbnQiLCJzdWIiOiJkZW1vLWNsaWVudCIsImlzcyI6Im5vdGlmaWNhdGlvbi1zeXN0ZW0iLCJhdWQiOlsibm90aWZpY2F0aW9uLWNsaWVudHMiXSwiaWF0IjoxNzYyNzA5OTkwLCJleHAiOjE3NjI3MTM1OTB9.4DmsokWrp_DD6nkBngxtft2ozdCHsFjmNS4LbsZ-wzG8koxPydpkSFF0LVgH7jhHr7k0RxO2SMJhQKmUoKnPPQ",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "http://localhost:8081/api/test/authenticated",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8081",
-							"path": [
-								"api",
-								"test",
-								"authenticated"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Quotas",
-			"item": [
-				{
-					"name": "uso",
-					"item": [
-						{
-							"name": "Detalhes",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "http://localhost:8083/quotas/:clientId",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "8083",
-									"path": [
-										"quotas",
-										":clientId"
-									],
-									"variable": [
-										{
-											"key": "clientId",
-											"value": "demo-client"
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Detalhes por canal",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "http://localhost:8083/quotas/:clientId/:canal",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "8083",
-									"path": [
-										"quotas",
-										":clientId",
-										":canal"
-									],
-									"variable": [
-										{
-											"key": "clientId",
-											"value": "demo-client"
-										},
-										{
-											"key": "canal",
-											"value": "EMAIL"
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Valida e consome",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"clientId\": \"demo-client\",\r\n    \"channel\": \"EMAIL\",\r\n    \"amount\": 33,\r\n    \"notificationId\": \"test-001\"\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:8083/quotas/validate",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "8083",
-									"path": [
-										"quotas",
-										"validate"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Valida",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"clientId\": \"demo-client\",\r\n    \"channel\": \"EMAIL\",\r\n    \"amount\": 5,\r\n    \"notificationId\": \"test-001\"\r\n  }",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:8083/quotas/check",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "8083",
-									"path": [
-										"quotas",
-										"check"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Aumenta quota",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"url": {
-									"raw": "http://localhost:8083/quotas/release?clientId=demo-client&channel=EMAIL&amount=200&notificationId=test-notif-001",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "8083",
-									"path": [
-										"quotas",
-										"release"
-									],
-									"query": [
-										{
-											"key": "clientId",
-											"value": "demo-client"
-										},
-										{
-											"key": "channel",
-											"value": "EMAIL"
-										},
-										{
-											"key": "amount",
-											"value": "200"
-										},
-										{
-											"key": "notificationId",
-											"value": "test-notif-001"
-										}
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "admin",
-					"item": [
-						{
-							"name": "Cria",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"clientId\": \"demo-client-2\",\r\n    \"channel\": \"EMAIL\",\r\n    \"totalQuota\": 200\r\n  }",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:8083/admin/quotas",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "8083",
-									"path": [
-										"admin",
-										"quotas"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Deleta",
-							"request": {
-								"method": "DELETE",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"clientId\": \"demo-client\",\r\n    \"channel\": \"EMAIL\",\r\n    \"totalQuota\": 200\r\n  }",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:8083/admin/quotas/:clientId/:canal",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "8083",
-									"path": [
-										"admin",
-										"quotas",
-										":clientId",
-										":canal"
-									],
-									"variable": [
-										{
-											"key": "clientId",
-											"value": "demo-client"
-										},
-										{
-											"key": "canal",
-											"value": "EMAIL"
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Atualiza limite",
-							"request": {
-								"method": "PUT",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"clientId\": \"demo-client\",\r\n    \"channel\": \"EMAIL\",\r\n    \"totalQuota\": 200\r\n  }",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:8083/admin/quotas/:clientId/:canal?newTotalQuota=1000",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "8083",
-									"path": [
-										"admin",
-										"quotas",
-										":clientId",
-										":canal"
-									],
-									"query": [
-										{
-											"key": "newTotalQuota",
-											"value": "1000"
-										}
-									],
-									"variable": [
-										{
-											"key": "clientId",
-											"value": "demo-client"
-										},
-										{
-											"key": "canal",
-											"value": "EMAIL"
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Reseta uso",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"clientId\": \"demo-client\",\r\n    \"channel\": \"EMAIL\",\r\n    \"totalQuota\": 200\r\n  }",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:8083/admin/quotas/:clientId/:canal/reset",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "8083",
-									"path": [
-										"admin",
-										"quotas",
-										":clientId",
-										":canal",
-										"reset"
-									],
-									"variable": [
-										{
-											"key": "clientId",
-											"value": "demo-client"
-										},
-										{
-											"key": "canal",
-											"value": "EMAIL"
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "lista por uso disponivel",
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
-							"request": {
-								"method": "GET",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"clientId\": \"demo-client\",\r\n    \"channel\": \"EMAIL\",\r\n    \"totalQuota\": 200\r\n  }",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:8083/admin/quotas/near-limit?threshold=1000",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "8083",
-									"path": [
-										"admin",
-										"quotas",
-										"near-limit"
-									],
-									"query": [
-										{
-											"key": "threshold",
-											"value": "1000"
-										}
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "Health",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8083/actuator/health",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8083",
-							"path": [
-								"actuator",
-								"health"
-							]
-						}
-					},
-					"response": []
-				}
-			],
-			"auth": {
-				"type": "bearer",
-				"bearer": [
-					{
-						"key": "token",
-						"value": "{{access_token}}",
-						"type": "string"
-					}
-				]
-			},
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"type": "text/javascript",
-						"packages": {},
-						"requests": {},
-						"exec": [
-							"pm.sendRequest({\r",
-							"    url: 'http://localhost:8081/api/auth/login',\r",
-							"    method: 'POST',\r",
-							"    header: 'Content-Type: application/json',\r",
-							"    body: {\r",
-							"        mode: 'raw',\r",
-							"        raw: JSON.stringify({ clientId: 'demo-client', password: 'demo123' })\r",
-							"    }\r",
-							"}, function (err, response) {\r",
-							"    if (err) {\r",
-							"        console.error(err);\r",
-							"    } else {\r",
-							"        if (response.code === 200) {\r",
-							"            var responseBody = response.json();\r",
-							"            pm.collectionVariables.set('access_token', responseBody.token);\r",
-							"        } else {\r",
-							"            console.error('Failed to login. Response code:', response.code);\r",
-							"        }\r",
-							"    }\r",
-							"});"
-						]
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"packages": {},
-						"requests": {},
-						"exec": [
-							""
-						]
-					}
-				}
-			]
-		},
-		{
-			"name": "wiremock",
-			"item": [
-				{
-					"name": "push",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"idempotencyKey\": \"test-email-009\",\r\n    \"clientId\": \"demo-client\",\r\n    \"channel\": \"EMAIL\",\r\n    \"recipient\": \"sada12312dfaf!@SAF3231ad\",\r\n    \"subject\": \"Welcome to our platform!\",\r\n    \"content\": \"Hello! This is a test email notification.\",\r\n    \"priority\": \"MEDIUM\",\r\n    \"maxRetries\": 3\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/email/primary/send",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"email",
-								"primary",
-								"send"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "notificacao",
-			"item": [
-				{
-					"name": "health",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:8082/actuator/health",
-							"host": [
-								"localhost"
-							],
-							"port": "8082",
-							"path": [
-								"actuator",
-								"health"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "send",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"idempotencyKey\": \"test-email-016\",\r\n    \"clientId\": \"demo-client\",\r\n    \"channel\": \"EMAIL\",\r\n    \"recipient\": \"teste@email.com\",\r\n    \"subject\": \"Welcome to our platform!\",\r\n    \"content\": \"Hello! This is a test email notification.\",\r\n    \"priority\": \"MEDIUM\",\r\n    \"maxRetries\": 3\r\n  }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "localhost:8082/notifications/send",
-							"host": [
-								"localhost"
-							],
-							"port": "8082",
-							"path": [
-								"notifications",
-								"send"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "get by ID",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:8082/notifications/392d3db4-a480-439b-bb71-cc29974fc5c3",
-							"host": [
-								"localhost"
-							],
-							"port": "8082",
-							"path": [
-								"notifications",
-								"392d3db4-a480-439b-bb71-cc29974fc5c3"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "get by Client ID",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{notification_host}}/notifications/client/demo-client",
-							"host": [
-								"{{notification_host}}"
-							],
-							"path": [
-								"notifications",
-								"client",
-								"demo-client"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "stats",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{notification_host}}/notifications/stats",
-							"host": [
-								"{{notification_host}}"
-							],
-							"path": [
-								"notifications",
-								"stats"
-							]
-						}
-					},
-					"response": []
-				}
-			],
-			"auth": {
-				"type": "bearer",
-				"bearer": [
-					{
-						"key": "token",
-						"value": "{{access_token}}",
-						"type": "string"
-					}
-				]
-			},
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"type": "text/javascript",
-						"packages": {},
-						"requests": {},
-						"exec": [
-							"pm.sendRequest({\r",
-							"    url: 'http://localhost:8081/api/auth/login',\r",
-							"    method: 'POST',\r",
-							"    header: 'Content-Type: application/json',\r",
-							"    body: {\r",
-							"        mode: 'raw',\r",
-							"        raw: JSON.stringify({ clientId: 'demo-client', password: 'demo123' })\r",
-							"    }\r",
-							"}, function (err, response) {\r",
-							"    if (err) {\r",
-							"        console.error(err);\r",
-							"    } else {\r",
-							"        if (response.code === 200) {\r",
-							"            var responseBody = response.json();\r",
-							"            pm.collectionVariables.set('access_token', responseBody.token);\r",
-							"        } else {\r",
-							"            console.error('Failed to login. Response code:', response.code);\r",
-							"        }\r",
-							"    }\r",
-							"});"
-						]
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"packages": {},
-						"requests": {},
-						"exec": [
-							""
-						]
-					}
-				}
-			]
-		},
-		{
-			"name": "audit",
-			"item": [
-				{
-					"name": "health",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:8090/actuator/health",
-							"host": [
-								"localhost"
-							],
-							"port": "8090",
-							"path": [
-								"actuator",
-								"health"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "stats",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:8090/audit/notifications/5449f86c-6d46-4fc6-89fb-642102794031",
-							"host": [
-								"localhost"
-							],
-							"port": "8090",
-							"path": [
-								"audit",
-								"notifications",
-								"5449f86c-6d46-4fc6-89fb-642102794031"
-							]
-						}
-					},
-					"response": []
-				}
-			],
-			"auth": {
-				"type": "bearer",
-				"bearer": [
-					{
-						"key": "token",
-						"value": "{{access_token}}",
-						"type": "string"
-					}
-				]
-			},
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"type": "text/javascript",
-						"packages": {},
-						"requests": {},
-						"exec": [
-							"pm.sendRequest({\r",
-							"    url: 'http://localhost:8081/api/auth/login',\r",
-							"    method: 'POST',\r",
-							"    header: 'Content-Type: application/json',\r",
-							"    body: {\r",
-							"        mode: 'raw',\r",
-							"        raw: JSON.stringify({ clientId: 'demo-client', password: 'demo123' })\r",
-							"    }\r",
-							"}, function (err, response) {\r",
-							"    if (err) {\r",
-							"        console.error(err);\r",
-							"    } else {\r",
-							"        if (response.code === 200) {\r",
-							"            var responseBody = response.json();\r",
-							"            pm.collectionVariables.set('access_token', responseBody.token);\r",
-							"        } else {\r",
-							"            console.error('Failed to login. Response code:', response.code);\r",
-							"        }\r",
-							"    }\r",
-							"});"
-						]
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"packages": {},
-						"requests": {},
-						"exec": [
-							""
-						]
-					}
-				}
-			]
-		}
-	],
-	"variable": [
-		{
-			"key": "access_token",
-			"value": ""
-		},
-		{
-			"key": "quota_host",
-			"value": "",
-			"type": "default"
-		}
-	]
+  "info": {
+    "name": "pos - notificacoes",
+    "description": "",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "audit",
+      "item": [
+        {
+          "name": "health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://localhost:8090/actuator/health",
+              "protocol": "http",
+              "host": [
+                "localhost:8090"
+              ],
+              "path": [
+                "actuator",
+                "health"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "localhost:8090/audit/notifications/5449f86c-6d46-4fc6-89fb-642102794031",
+              "protocol": "",
+              "host": [
+                "localhost:8090"
+              ],
+              "path": [
+                "audit",
+                "notifications",
+                "5449f86c-6d46-4fc6-89fb-642102794031"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        }
+      ],
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              "await bru.sendRequest({",
+              "    url: 'http://localhost:8081/api/auth/login',",
+              "    method: 'POST',",
+              "    headers: 'Content-Type: application/json',",
+              "    data: JSON.stringify({ clientId: 'demo-client', password: 'demo123' })",
+              "}, async function(err, response) {",
+              "    if (err) {",
+              "        console.error(err);",
+              "    } else {",
+              "        if (response.status === 200) {",
+              "            var responseBody = response.data;",
+              "            bru.setVar('access_token', responseBody.token);",
+              "        } else {",
+              "            response.status;",
+              "        }",
+              "    }",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "notificacao",
+      "item": [
+        {
+          "name": "get by Client ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{notification_host}}/notifications/client/demo-client",
+              "protocol": "",
+              "host": [
+                "{{notification_host}}"
+              ],
+              "path": [
+                "notifications",
+                "client",
+                "demo-client"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "get by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "localhost:8082/notifications/392d3db4-a480-439b-bb71-cc29974fc5c3",
+              "protocol": "",
+              "host": [
+                "localhost:8082"
+              ],
+              "path": [
+                "notifications",
+                "392d3db4-a480-439b-bb71-cc29974fc5c3"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://localhost:8082/actuator/health",
+              "protocol": "http",
+              "host": [
+                "localhost:8082"
+              ],
+              "path": [
+                "actuator",
+                "health"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "send",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://localhost:8082/notifications/send",
+              "protocol": "http",
+              "host": [
+                "localhost:8082"
+              ],
+              "path": [
+                "notifications",
+                "send"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"idempotencyKey\": \"test-email-{{$randomInt}}\",\n    \"clientId\": \"demo-client\",\n    \"channel\": \"EMAIL\",\n    \"recipient\": \"teste@email.com\",\n    \"subject\": \"Welcome to our platform!\",\n    \"content\": \"Hello! This is a test email notification.\",\n    \"priority\": \"MEDIUM\",\n    \"maxRetries\": 3\n  }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{notification_host}}/notifications/stats",
+              "protocol": "",
+              "host": [
+                "{{notification_host}}"
+              ],
+              "path": [
+                "notifications",
+                "stats"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        }
+      ],
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              "await bru.sendRequest({",
+              "    url: 'http://localhost:8081/api/auth/login',",
+              "    method: 'POST',",
+              "    headers: 'Content-Type: application/json',",
+              "    data: JSON.stringify({ clientId: 'demo-client', password: 'demo123' })",
+              "}, async function(err, response) {",
+              "    if (err) {",
+              "        console.error(err);",
+              "    } else {",
+              "        if (response.status === 200) {",
+              "            var responseBody = response.data;",
+              "            bru.setVar('access_token', responseBody.token);",
+              "        } else {",
+              "            response.status;",
+              "        }",
+              "    }",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Gateway",
+      "item": [
+        {
+          "name": "Auth - Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://localhost:8081/api/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost:8081"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"clientId\": \"demo-client\",\n    \"password\": \"demo123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Auth - Validate",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": {
+                "key": "token",
+                "value": "eyJhbGciOiJIUzUxMiJ9.eyJzY29wZXMiOlsibm90aWZpY2F0aW9uOnNlbmQiLCJxdW90YTpyZWFkIl0sImNsaWVudElkIjoiZGVtby1jbGllbnQiLCJzdWIiOiJkZW1vLWNsaWVudCIsImlzcyI6Im5vdGlmaWNhdGlvbi1zeXN0ZW0iLCJhdWQiOlsibm90aWZpY2F0aW9uLWNsaWVudHMiXSwiaWF0IjoxNzYyNzEyMjQ0LCJleHAiOjE3NjI3MTU4NDR9._sAU11X0zgME7xI9zg9OWnbXCtaDpssvJYK9JkdnJDmhTPRHmA-lNVdyvXZFHGFB21g2LJFyd93QLAnUAaD_Fg",
+                "type": "string"
+              }
+            },
+            "description": "",
+            "url": {
+              "raw": "http://localhost:8081/api/auth/validate",
+              "protocol": "http",
+              "host": [
+                "localhost:8081"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "validate"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://localhost:8081/actuator/health",
+              "protocol": "http",
+              "host": [
+                "localhost:8081"
+              ],
+              "path": [
+                "actuator",
+                "health"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "Test - Authenticated",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": {
+                "key": "token",
+                "value": "eyJhbGciOiJIUzUxMiJ9.eyJzY29wZXMiOlsibm90aWZpY2F0aW9uOnNlbmQiLCJxdW90YTpyZWFkIl0sImNsaWVudElkIjoiZGVtby1jbGllbnQiLCJzdWIiOiJkZW1vLWNsaWVudCIsImlzcyI6Im5vdGlmaWNhdGlvbi1zeXN0ZW0iLCJhdWQiOlsibm90aWZpY2F0aW9uLWNsaWVudHMiXSwiaWF0IjoxNzYyNzA5OTkwLCJleHAiOjE3NjI3MTM1OTB9.4DmsokWrp_DD6nkBngxtft2ozdCHsFjmNS4LbsZ-wzG8koxPydpkSFF0LVgH7jhHr7k0RxO2SMJhQKmUoKnPPQ",
+                "type": "string"
+              }
+            },
+            "description": "",
+            "url": {
+              "raw": "http://localhost:8081/api/test/authenticated",
+              "protocol": "http",
+              "host": [
+                "localhost:8081"
+              ],
+              "path": [
+                "api",
+                "test",
+                "authenticated"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "apis",
+          "item": [
+            {
+              "name": "auditoria",
+              "item": [
+                {
+                  "name": "by id",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "description": "",
+                    "url": {
+                      "raw": "{{audit_host}}/audit/notifications/969e97a1-4b53-4edd-b6d5-a7bdb792db07",
+                      "protocol": "",
+                      "host": [
+                        "{{audit_host}}"
+                      ],
+                      "path": [
+                        "audit",
+                        "notifications",
+                        "969e97a1-4b53-4edd-b6d5-a7bdb792db07"
+                      ],
+                      "query": [],
+                      "variable": []
+                    }
+                  }
+                },
+                {
+                  "name": "health",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "description": "",
+                    "url": {
+                      "raw": "{{audit_host}}/actuator/health",
+                      "protocol": "",
+                      "host": [
+                        "{{audit_host}}"
+                      ],
+                      "path": [
+                        "actuator",
+                        "health"
+                      ],
+                      "query": [],
+                      "variable": []
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "name": "notificacao",
+              "item": [
+                {
+                  "name": "get by Client ID",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "description": "",
+                    "url": {
+                      "raw": "{{notification_host}}/notifications/client/demo-client",
+                      "protocol": "",
+                      "host": [
+                        "{{notification_host}}"
+                      ],
+                      "path": [
+                        "notifications",
+                        "client",
+                        "demo-client"
+                      ],
+                      "query": [],
+                      "variable": []
+                    }
+                  }
+                },
+                {
+                  "name": "get by ID",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "description": "",
+                    "url": {
+                      "raw": "{{notification_host}}/notifications/:id",
+                      "protocol": "",
+                      "host": [
+                        "{{notification_host}}"
+                      ],
+                      "path": [
+                        "notifications",
+                        ":id"
+                      ],
+                      "query": [],
+                      "variable": [
+                        {
+                          "key": "id",
+                          "value": "56507a5d-9e56-4f44-b714-d42a0e937689"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "health",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "description": "",
+                    "url": {
+                      "raw": "{{notification_host}}/actuator/health",
+                      "protocol": "",
+                      "host": [
+                        "{{notification_host}}"
+                      ],
+                      "path": [
+                        "actuator",
+                        "health"
+                      ],
+                      "query": [],
+                      "variable": []
+                    }
+                  }
+                },
+                {
+                  "name": "send",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "disabled": false,
+                        "type": "default"
+                      }
+                    ],
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "description": "",
+                    "url": {
+                      "raw": "{{notification_host}}/notifications/send",
+                      "protocol": "",
+                      "host": [
+                        "{{notification_host}}"
+                      ],
+                      "path": [
+                        "notifications",
+                        "send"
+                      ],
+                      "query": [],
+                      "variable": []
+                    },
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n    \"idempotencyKey\": \"test-email-{{$randomInt}}\",\n    \"clientId\": \"demo-client\",\n    \"channel\": \"EMAIL\",\n    \"recipient\": \"51999999999\",\n    \"subject\": \"Welcome to our platform!\",\n    \"content\": \"Hello! This is a test email notification.\",\n    \"priority\": \"MEDIUM\",\n    \"maxRetries\": 3\n  }",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    }
+                  },
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {},
+                        "exec": [
+                          "// // const body = pm.request.body.raw;",
+                          "// const randomInt = _.random(1, 100000);",
+                          "// body.idempotencyKey = body.idempotencyKey + randomInt",
+                          "// // pm.request.body.raw = body;",
+                          ""
+                        ]
+                      }
+                    }
+                  ]
+                },
+                {
+                  "name": "stats",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "description": "",
+                    "url": {
+                      "raw": "{{notification_host}}/notifications/stats",
+                      "protocol": "",
+                      "host": [
+                        "{{notification_host}}"
+                      ],
+                      "path": [
+                        "notifications",
+                        "stats"
+                      ],
+                      "query": [],
+                      "variable": []
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Quotas",
+              "item": [
+                {
+                  "name": "circuit breeaker",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "description": "",
+                    "url": {
+                      "raw": "{{quota_host}}/quotas/:clientId",
+                      "protocol": "",
+                      "host": [
+                        "{{quota_host}}"
+                      ],
+                      "path": [
+                        "quotas",
+                        ":clientId"
+                      ],
+                      "query": [],
+                      "variable": [
+                        {
+                          "key": "clientId",
+                          "value": "demo-client"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "Health",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "description": "",
+                    "url": {
+                      "raw": "{{quota_host}}/actuator/health",
+                      "protocol": "",
+                      "host": [
+                        "{{quota_host}}"
+                      ],
+                      "path": [
+                        "actuator",
+                        "health"
+                      ],
+                      "query": [],
+                      "variable": []
+                    }
+                  }
+                },
+                {
+                  "name": "admin",
+                  "item": [
+                    {
+                      "name": "Atualiza limite",
+                      "request": {
+                        "method": "PUT",
+                        "header": [],
+                        "auth": {
+                          "type": "noauth"
+                        },
+                        "description": "",
+                        "url": {
+                          "raw": "{{quota_host}}/admin/quotas/:clientId/:canal?newTotalQuota=1000",
+                          "protocol": "",
+                          "host": [
+                            "{{quota_host}}"
+                          ],
+                          "path": [
+                            "admin",
+                            "quotas",
+                            ":clientId",
+                            ":canal?newTotalQuota=1000"
+                          ],
+                          "query": [
+                            {
+                              "key": "newTotalQuota",
+                              "value": "1000"
+                            }
+                          ],
+                          "variable": [
+                            {
+                              "key": "clientId",
+                              "value": "demo-client"
+                            },
+                            {
+                              "key": "canal",
+                              "value": "EMAIL"
+                            }
+                          ]
+                        },
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n    \"clientId\": \"demo-client\",\n    \"channel\": \"EMAIL\",\n    \"totalQuota\": 200\n  }",
+                          "options": {
+                            "raw": {
+                              "language": "json"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "name": "Cria",
+                      "request": {
+                        "method": "POST",
+                        "header": [],
+                        "auth": {
+                          "type": "noauth"
+                        },
+                        "description": "",
+                        "url": {
+                          "raw": "{{quota_host}}/admin/quotas",
+                          "protocol": "",
+                          "host": [
+                            "{{quota_host}}"
+                          ],
+                          "path": [
+                            "admin",
+                            "quotas"
+                          ],
+                          "query": [],
+                          "variable": []
+                        },
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n    \"clientId\": \"demo-client\",\n    \"channel\": \"SMS\",\n    \"totalQuota\": 200\n  }",
+                          "options": {
+                            "raw": {
+                              "language": "json"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "name": "Deleta",
+                      "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "auth": {
+                          "type": "noauth"
+                        },
+                        "description": "",
+                        "url": {
+                          "raw": "{{quota_host}}/admin/quotas/:clientId/:canal",
+                          "protocol": "",
+                          "host": [
+                            "{{quota_host}}"
+                          ],
+                          "path": [
+                            "admin",
+                            "quotas",
+                            ":clientId",
+                            ":canal"
+                          ],
+                          "query": [],
+                          "variable": [
+                            {
+                              "key": "clientId",
+                              "value": "demo-client"
+                            },
+                            {
+                              "key": "canal",
+                              "value": "EMAIL"
+                            }
+                          ]
+                        },
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n    \"clientId\": \"demo-client\",\n    \"channel\": \"EMAIL\",\n    \"totalQuota\": 200\n  }",
+                          "options": {
+                            "raw": {
+                              "language": "json"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "name": "lista por uso disponivel",
+                      "request": {
+                        "method": "GET",
+                        "header": [],
+                        "auth": {
+                          "type": "noauth"
+                        },
+                        "description": "",
+                        "url": {
+                          "raw": "{{quota_host}}/admin/quotas/near-limit?threshold=1000",
+                          "protocol": "",
+                          "host": [
+                            "{{quota_host}}"
+                          ],
+                          "path": [
+                            "admin",
+                            "quotas",
+                            "near-limit?threshold=1000"
+                          ],
+                          "query": [
+                            {
+                              "key": "threshold",
+                              "value": "1000"
+                            }
+                          ],
+                          "variable": []
+                        },
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n    \"clientId\": \"demo-client\",\n    \"channel\": \"EMAIL\",\n    \"totalQuota\": 200\n  }",
+                          "options": {
+                            "raw": {
+                              "language": "json"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "name": "Reseta uso",
+                      "request": {
+                        "method": "POST",
+                        "header": [],
+                        "auth": {
+                          "type": "noauth"
+                        },
+                        "description": "",
+                        "url": {
+                          "raw": "{{quota_host}}/admin/quotas/:clientId/:canal/reset",
+                          "protocol": "",
+                          "host": [
+                            "{{quota_host}}"
+                          ],
+                          "path": [
+                            "admin",
+                            "quotas",
+                            ":clientId",
+                            ":canal",
+                            "reset"
+                          ],
+                          "query": [],
+                          "variable": [
+                            {
+                              "key": "clientId",
+                              "value": "demo-client"
+                            },
+                            {
+                              "key": "canal",
+                              "value": "EMAIL"
+                            }
+                          ]
+                        },
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n    \"clientId\": \"demo-client\",\n    \"channel\": \"EMAIL\",\n    \"totalQuota\": 200\n  }",
+                          "options": {
+                            "raw": {
+                              "language": "json"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "name": "uso",
+                  "item": [
+                    {
+                      "name": "Aumenta quota",
+                      "request": {
+                        "method": "POST",
+                        "header": [],
+                        "auth": {
+                          "type": "noauth"
+                        },
+                        "description": "",
+                        "url": {
+                          "raw": "{{quota_host}}/quotas/release?clientId=demo-client&channel=EMAIL&amount=200&notificationId=test-notif-001",
+                          "protocol": "",
+                          "host": [
+                            "{{quota_host}}"
+                          ],
+                          "path": [
+                            "quotas",
+                            "release?clientId=demo-client&channel=EMAIL&amount=200&notificationId=test-notif-001"
+                          ],
+                          "query": [
+                            {
+                              "key": "clientId",
+                              "value": "demo-client"
+                            },
+                            {
+                              "key": "channel",
+                              "value": "EMAIL"
+                            },
+                            {
+                              "key": "amount",
+                              "value": "200"
+                            },
+                            {
+                              "key": "notificationId",
+                              "value": "test-notif-001"
+                            }
+                          ],
+                          "variable": []
+                        }
+                      }
+                    },
+                    {
+                      "name": "Detalhes por canal",
+                      "request": {
+                        "method": "GET",
+                        "header": [],
+                        "auth": {
+                          "type": "noauth"
+                        },
+                        "description": "",
+                        "url": {
+                          "raw": "{{quota_host}}/quotas/:clientId/:canal",
+                          "protocol": "",
+                          "host": [
+                            "{{quota_host}}"
+                          ],
+                          "path": [
+                            "quotas",
+                            ":clientId",
+                            ":canal"
+                          ],
+                          "query": [],
+                          "variable": [
+                            {
+                              "key": "clientId",
+                              "value": "demo-client"
+                            },
+                            {
+                              "key": "canal",
+                              "value": "EMAIL"
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "Detalhes",
+                      "request": {
+                        "method": "GET",
+                        "header": [],
+                        "auth": {
+                          "type": "noauth"
+                        },
+                        "description": "",
+                        "url": {
+                          "raw": "{{quota_host}}/quotas/:clientId",
+                          "protocol": "",
+                          "host": [
+                            "{{quota_host}}"
+                          ],
+                          "path": [
+                            "quotas",
+                            ":clientId"
+                          ],
+                          "query": [],
+                          "variable": [
+                            {
+                              "key": "clientId",
+                              "value": "demo-client"
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "Valida e consome",
+                      "request": {
+                        "method": "POST",
+                        "header": [],
+                        "auth": {
+                          "type": "noauth"
+                        },
+                        "description": "",
+                        "url": {
+                          "raw": "{{quota_host}}/quotas/validate",
+                          "protocol": "",
+                          "host": [
+                            "{{quota_host}}"
+                          ],
+                          "path": [
+                            "quotas",
+                            "validate"
+                          ],
+                          "query": [],
+                          "variable": []
+                        },
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n    \"clientId\": \"demo-client\",\n    \"channel\": \"EMAIL\",\n    \"amount\": 33,\n    \"notificationId\": \"test-001\"\n}",
+                          "options": {
+                            "raw": {
+                              "language": "json"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "name": "Valida",
+                      "request": {
+                        "method": "POST",
+                        "header": [],
+                        "auth": {
+                          "type": "noauth"
+                        },
+                        "description": "",
+                        "url": {
+                          "raw": "{{quota_host}}/quotas/check",
+                          "protocol": "",
+                          "host": [
+                            "{{quota_host}}"
+                          ],
+                          "path": [
+                            "quotas",
+                            "check"
+                          ],
+                          "query": [],
+                          "variable": []
+                        },
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n    \"clientId\": \"demo-client\",\n    \"channel\": \"EMAIL\",\n    \"amount\": 5,\n    \"notificationId\": \"test-001\"\n  }",
+                          "options": {
+                            "raw": {
+                              "language": "json"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              ],
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {},
+                    "exec": [
+                      "await bru.sendRequest({",
+                      "    url: 'http://localhost:8081/api/auth/login',",
+                      "    method: 'POST',",
+                      "    headers: 'Content-Type: application/json',",
+                      "    data: JSON.stringify({ clientId: 'demo-client', password: 'demo123' })",
+                      "}, async function(err, response) {",
+                      "    if (err) {",
+                      "        console.error(err);",
+                      "    } else {",
+                      "        if (response.status === 200) {",
+                      "            var responseBody = response.data;",
+                      "            bru.setVar('access_token', responseBody.token);",
+                      "        } else {",
+                      "            response.status;",
+                      "        }",
+                      "    }",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "template",
+              "item": [
+                {
+                  "name": "Get Template",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "X-Client-ID",
+                        "value": "demo-client",
+                        "disabled": false,
+                        "type": "default"
+                      }
+                    ],
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "description": "",
+                    "url": {
+                      "raw": "{{template_host}}/templates/ORDER_CONFIRMATION?channel=EMAIL",
+                      "protocol": "",
+                      "host": [
+                        "{{template_host}}"
+                      ],
+                      "path": [
+                        "templates",
+                        "ORDER_CONFIRMATION?channel=EMAIL"
+                      ],
+                      "query": [
+                        {
+                          "key": "channel",
+                          "value": "EMAIL"
+                        }
+                      ],
+                      "variable": []
+                    }
+                  }
+                },
+                {
+                  "name": "Render Template",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "disabled": false,
+                        "type": "default"
+                      }
+                    ],
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "description": "",
+                    "url": {
+                      "raw": "{{template_host}}/internal/v1/templates/render",
+                      "protocol": "",
+                      "host": [
+                        "{{template_host}}"
+                      ],
+                      "path": [
+                        "internal",
+                        "v1",
+                        "templates",
+                        "render"
+                      ],
+                      "query": [],
+                      "variable": []
+                    },
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"clientId\": \"demo-client\",\n  \"channel\": \"EMAIL\",\n  \"templateCode\": \"ORDER_CONFIRMATION\",\n  \"variables\": {\n    \"customerName\": \"João Silva\",\n    \"orderId\": \"12345\",\n    \"totalAmount\": \"150.00\"\n  }\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "name": "Delete Template",
+                  "request": {
+                    "method": "DELETE",
+                    "header": [
+                      {
+                        "key": "X-Client-ID",
+                        "value": "demo-client",
+                        "disabled": false,
+                        "type": "default"
+                      }
+                    ],
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "description": "",
+                    "url": {
+                      "raw": "{{template_host}}/templates/ORDER_CONFIRMATION?channel=EMAIL",
+                      "protocol": "",
+                      "host": [
+                        "{{template_host}}"
+                      ],
+                      "path": [
+                        "templates",
+                        "ORDER_CONFIRMATION?channel=EMAIL"
+                      ],
+                      "query": [
+                        {
+                          "key": "channel",
+                          "value": "EMAIL"
+                        }
+                      ],
+                      "variable": []
+                    }
+                  }
+                },
+                {
+                  "name": "Get Template History",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "X-Client-ID",
+                        "value": "demo-client",
+                        "disabled": false,
+                        "type": "default"
+                      }
+                    ],
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "description": "",
+                    "url": {
+                      "raw": "{{template_host}}/templates/ORDER_CONFIRMATION/history?channel=EMAIL",
+                      "protocol": "",
+                      "host": [
+                        "{{template_host}}"
+                      ],
+                      "path": [
+                        "templates",
+                        "ORDER_CONFIRMATION",
+                        "history?channel=EMAIL"
+                      ],
+                      "query": [
+                        {
+                          "key": "channel",
+                          "value": "EMAIL"
+                        }
+                      ],
+                      "variable": []
+                    }
+                  }
+                },
+                {
+                  "name": "Preview Template",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "X-Client-ID",
+                        "value": "demo-client",
+                        "disabled": false,
+                        "type": "default"
+                      },
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "disabled": false,
+                        "type": "default"
+                      }
+                    ],
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "description": "",
+                    "url": {
+                      "raw": "{{template_host}}/templates/ORDER_CONFIRMATION/preview?channel=EMAIL",
+                      "protocol": "",
+                      "host": [
+                        "{{template_host}}"
+                      ],
+                      "path": [
+                        "templates",
+                        "ORDER_CONFIRMATION",
+                        "preview?channel=EMAIL"
+                      ],
+                      "query": [
+                        {
+                          "key": "channel",
+                          "value": "EMAIL"
+                        }
+                      ],
+                      "variable": []
+                    },
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"clientId\": \"demo-client\",\n  \"channel\": \"EMAIL\",\n  \"templateCode\": \"ORDER_CONFIRMATION\",\n  \"variables\": {\n    \"customerName\": \"João Silva\",\n    \"orderId\": \"12345\",\n    \"totalAmount\": \"150.00\"\n  }\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "name": "Update Template",
+                  "request": {
+                    "method": "PUT",
+                    "header": [
+                      {
+                        "key": "X-Client-ID",
+                        "value": "demo-client",
+                        "disabled": false,
+                        "type": "default"
+                      },
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "disabled": false,
+                        "type": "default"
+                      }
+                    ],
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "description": "",
+                    "url": {
+                      "raw": "{{template_host}}/templates/ORDER_CONFIRMATION?channel=EMAIL",
+                      "protocol": "",
+                      "host": [
+                        "{{template_host}}"
+                      ],
+                      "path": [
+                        "templates",
+                        "ORDER_CONFIRMATION?channel=EMAIL"
+                      ],
+                      "query": [
+                        {
+                          "key": "channel",
+                          "value": "EMAIL"
+                        }
+                      ],
+                      "variable": []
+                    },
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"c82988b2-8def-4f3f-ac3a-6465bb626cac\",\n  \"clientId\": \"demo-client\",\n  \"channel\": \"EMAIL\",\n  \"templateCode\": \"ORDER_CONFIRMATION\",\n  \"version\": 2,\n  \"content\": \"Olá {{customerName}}! 🎉\\n\\nSeu pedido #{{orderId}} foi confirmado com sucesso!\\n\\nValor: R$ {{totalAmount}}\\n\\nAgradecemos sua compra.\",\n  \"subject\": \"✅ Pedido #{{orderId}} confirmado\",\n  \"variables\": [\n    \"totalAmount\",\n    \"orderId\",\n    \"customerName\"\n  ],\n  \"active\": true,\n  \"createdAt\": null,\n  \"updatedAt\": null\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "name": "Health Check",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "description": "",
+                    "url": {
+                      "raw": "{{template_host}}/actuator/health",
+                      "protocol": "",
+                      "host": [
+                        "{{template_host}}"
+                      ],
+                      "path": [
+                        "actuator",
+                        "health"
+                      ],
+                      "query": [],
+                      "variable": []
+                    }
+                  }
+                },
+                {
+                  "name": "Create Template",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "X-Client-ID",
+                        "value": "demo-client",
+                        "disabled": false,
+                        "type": "default"
+                      },
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "disabled": false,
+                        "type": "default"
+                      }
+                    ],
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "description": "",
+                    "url": {
+                      "raw": "{{template_host}}/templates",
+                      "protocol": "",
+                      "host": [
+                        "{{template_host}}"
+                      ],
+                      "path": [
+                        "templates"
+                      ],
+                      "query": [],
+                      "variable": []
+                    },
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"templateCode\": \"ORDER_CONFIRMATION\",\n  \"channel\": \"EMAIL\",\n  \"content\": \"Olá {{customerName}},\\n\\nSeu pedido #{{orderId}} foi confirmado com sucesso!\\n\\nTotal: R$ {{totalAmount}}\\n\\nObrigado pela preferência!\",\n  \"subject\": \"✅ Pedido #{{orderId}} confirmado\",\n  \"variables\": [\"customerName\", \"orderId\", \"totalAmount\"]\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "name": "List Templates by Channel",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "X-Client-ID",
+                        "value": "demo-client",
+                        "disabled": false,
+                        "type": "default"
+                      }
+                    ],
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "description": "",
+                    "url": {
+                      "raw": "{{template_host}}/templates?channel=SMS",
+                      "protocol": "",
+                      "host": [
+                        "{{template_host}}"
+                      ],
+                      "path": [
+                        "templates?channel=SMS"
+                      ],
+                      "query": [
+                        {
+                          "key": "channel",
+                          "value": "SMS"
+                        }
+                      ],
+                      "variable": []
+                    }
+                  }
+                },
+                {
+                  "name": "List Templates",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "X-Client-ID",
+                        "value": "demo-client",
+                        "disabled": false,
+                        "type": "default"
+                      }
+                    ],
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "description": "",
+                    "url": {
+                      "raw": "{{template_host}}/templates",
+                      "protocol": "",
+                      "host": [
+                        "{{template_host}}"
+                      ],
+                      "path": [
+                        "templates"
+                      ],
+                      "query": [],
+                      "variable": []
+                    }
+                  }
+                },
+                {
+                  "name": "Prometheus Metrics",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "description": "",
+                    "url": {
+                      "raw": "{{template_host}}/actuator/prometheus",
+                      "protocol": "",
+                      "host": [
+                        "{{template_host}}"
+                      ],
+                      "path": [
+                        "actuator",
+                        "prometheus"
+                      ],
+                      "query": [],
+                      "variable": []
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Quotas",
+      "item": [
+        {
+          "name": "Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://localhost:8083/actuator/health",
+              "protocol": "http",
+              "host": [
+                "localhost:8083"
+              ],
+              "path": [
+                "actuator",
+                "health"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "uso",
+          "item": [
+            {
+              "name": "Aumenta quota",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "",
+                "url": {
+                  "raw": "http://localhost:8083/quotas/release?clientId=demo-client&channel=EMAIL&amount=200&notificationId=test-notif-001",
+                  "protocol": "http",
+                  "host": [
+                    "localhost:8083"
+                  ],
+                  "path": [
+                    "quotas",
+                    "release"
+                  ],
+                  "query": [
+                    {
+                      "key": "clientId",
+                      "value": "demo-client"
+                    },
+                    {
+                      "key": "channel",
+                      "value": "EMAIL"
+                    },
+                    {
+                      "key": "amount",
+                      "value": "200"
+                    },
+                    {
+                      "key": "notificationId",
+                      "value": "test-notif-001"
+                    }
+                  ],
+                  "variable": []
+                }
+              }
+            },
+            {
+              "name": "Detalhes por canal",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "",
+                "url": {
+                  "raw": "http://localhost:8083/quotas/:clientId/:canal",
+                  "protocol": "http",
+                  "host": [
+                    "localhost:8083"
+                  ],
+                  "path": [
+                    "quotas",
+                    ":clientId",
+                    ":canal"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "key": "clientId",
+                      "value": "demo-client"
+                    },
+                    {
+                      "key": "canal",
+                      "value": "EMAIL"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Detalhes",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "",
+                "url": {
+                  "raw": "http://localhost:8083/quotas/:clientId",
+                  "protocol": "http",
+                  "host": [
+                    "localhost:8083"
+                  ],
+                  "path": [
+                    "quotas",
+                    ":clientId"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "key": "clientId",
+                      "value": "demo-client"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Valida e consome",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "",
+                "url": {
+                  "raw": "http://localhost:8083/quotas/validate",
+                  "protocol": "http",
+                  "host": [
+                    "localhost:8083"
+                  ],
+                  "path": [
+                    "quotas",
+                    "validate"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"clientId\": \"demo-client\",\n    \"channel\": \"EMAIL\",\n    \"amount\": 33,\n    \"notificationId\": \"test-001\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Valida",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "",
+                "url": {
+                  "raw": "http://localhost:8083/quotas/check",
+                  "protocol": "http",
+                  "host": [
+                    "localhost:8083"
+                  ],
+                  "path": [
+                    "quotas",
+                    "check"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"clientId\": \"demo-client\",\n    \"channel\": \"EMAIL\",\n    \"amount\": 5,\n    \"notificationId\": \"test-001\"\n  }",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "admin",
+          "item": [
+            {
+              "name": "Atualiza limite",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "",
+                "url": {
+                  "raw": "http://localhost:8083/admin/quotas/:clientId/:canal?newTotalQuota=1000",
+                  "protocol": "http",
+                  "host": [
+                    "localhost:8083"
+                  ],
+                  "path": [
+                    "admin",
+                    "quotas",
+                    ":clientId",
+                    ":canal"
+                  ],
+                  "query": [
+                    {
+                      "key": "newTotalQuota",
+                      "value": "1000"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "key": "clientId",
+                      "value": "demo-client"
+                    },
+                    {
+                      "key": "canal",
+                      "value": "EMAIL"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"clientId\": \"demo-client\",\n    \"channel\": \"EMAIL\",\n    \"totalQuota\": 200\n  }",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Cria",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "",
+                "url": {
+                  "raw": "http://localhost:8083/admin/quotas",
+                  "protocol": "http",
+                  "host": [
+                    "localhost:8083"
+                  ],
+                  "path": [
+                    "admin",
+                    "quotas"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"clientId\": \"demo-client-2\",\n    \"channel\": \"EMAIL\",\n    \"totalQuota\": 200\n  }",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Deleta",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "",
+                "url": {
+                  "raw": "http://localhost:8083/admin/quotas/:clientId/:canal",
+                  "protocol": "http",
+                  "host": [
+                    "localhost:8083"
+                  ],
+                  "path": [
+                    "admin",
+                    "quotas",
+                    ":clientId",
+                    ":canal"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "key": "clientId",
+                      "value": "demo-client"
+                    },
+                    {
+                      "key": "canal",
+                      "value": "EMAIL"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"clientId\": \"demo-client\",\n    \"channel\": \"EMAIL\",\n    \"totalQuota\": 200\n  }",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "lista por uso disponivel",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "",
+                "url": {
+                  "raw": "http://localhost:8083/admin/quotas/near-limit?threshold=1000",
+                  "protocol": "http",
+                  "host": [
+                    "localhost:8083"
+                  ],
+                  "path": [
+                    "admin",
+                    "quotas",
+                    "near-limit"
+                  ],
+                  "query": [
+                    {
+                      "key": "threshold",
+                      "value": "1000"
+                    }
+                  ],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"clientId\": \"demo-client\",\n    \"channel\": \"EMAIL\",\n    \"totalQuota\": 200\n  }",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Reseta uso",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "",
+                "url": {
+                  "raw": "http://localhost:8083/admin/quotas/:clientId/:canal/reset",
+                  "protocol": "http",
+                  "host": [
+                    "localhost:8083"
+                  ],
+                  "path": [
+                    "admin",
+                    "quotas",
+                    ":clientId",
+                    ":canal",
+                    "reset"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "key": "clientId",
+                      "value": "demo-client"
+                    },
+                    {
+                      "key": "canal",
+                      "value": "EMAIL"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"clientId\": \"demo-client\",\n    \"channel\": \"EMAIL\",\n    \"totalQuota\": 200\n  }",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              "await bru.sendRequest({",
+              "    url: 'http://localhost:8081/api/auth/login',",
+              "    method: 'POST',",
+              "    headers: 'Content-Type: application/json',",
+              "    data: JSON.stringify({ clientId: 'demo-client', password: 'demo123' })",
+              "}, async function(err, response) {",
+              "    if (err) {",
+              "        console.error(err);",
+              "    } else {",
+              "        if (response.status === 200) {",
+              "            var responseBody = response.data;",
+              "            bru.setVar('access_token', responseBody.token);",
+              "        } else {",
+              "            response.status;",
+              "        }",
+              "    }",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "wiremock",
+      "item": [
+        {
+          "name": "push",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://localhost:8080/email/primary/send",
+              "protocol": "http",
+              "host": [
+                "localhost:8080"
+              ],
+              "path": [
+                "email",
+                "primary",
+                "send"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"idempotencyKey\": \"test-email-009\",\n    \"clientId\": \"demo-client\",\n    \"channel\": \"EMAIL\",\n    \"recipient\": \"sada12312dfaf!@SAF3231ad\",\n    \"subject\": \"Welcome to our platform!\",\n    \"content\": \"Hello! This is a test email notification.\",\n    \"priority\": \"MEDIUM\",\n    \"maxRetries\": 3\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "template",
+      "item": [
+        {
+          "name": "Delete Template",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "X-Client-ID",
+                "value": "demo-client",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://localhost:8085/templates/ORDER_CONFIRMATION?channel=EMAIL",
+              "protocol": "http",
+              "host": [
+                "localhost:8085"
+              ],
+              "path": [
+                "templates",
+                "ORDER_CONFIRMATION"
+              ],
+              "query": [
+                {
+                  "key": "channel",
+                  "value": "EMAIL"
+                }
+              ],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://localhost:8085/actuator/health",
+              "protocol": "http",
+              "host": [
+                "localhost:8085"
+              ],
+              "path": [
+                "actuator",
+                "health"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "Create Template",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Client-ID",
+                "value": "demo-client",
+                "disabled": false,
+                "type": "default"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://localhost:8085/templates",
+              "protocol": "http",
+              "host": [
+                "localhost:8085"
+              ],
+              "path": [
+                "templates"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"templateCode\": \"ORDER_CONFIRMATION\",\n  \"channel\": \"EMAIL\",\n  \"content\": \"Olá {{customerName}},\\n\\nSeu pedido #{{orderId}} foi confirmado com sucesso!\\n\\nTotal: R$ {{totalAmount}}\\n\\nObrigado pela preferência!\",\n  \"subject\": \"✅ Pedido #{{orderId}} confirmado\",\n  \"variables\": [\"customerName\", \"orderId\", \"totalAmount\"]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Get Template",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Client-ID",
+                "value": "demo-client",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://localhost:8085/templates/ORDER_CONFIRMATION?channel=EMAIL",
+              "protocol": "http",
+              "host": [
+                "localhost:8085"
+              ],
+              "path": [
+                "templates",
+                "ORDER_CONFIRMATION"
+              ],
+              "query": [
+                {
+                  "key": "channel",
+                  "value": "EMAIL"
+                }
+              ],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "List Templates",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Client-ID",
+                "value": "demo-client",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://localhost:8085/templates",
+              "protocol": "http",
+              "host": [
+                "localhost:8085"
+              ],
+              "path": [
+                "templates"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "List Templates by Channel",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Client-ID",
+                "value": "demo-client",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://localhost:8085/templates?channel=EMAIL",
+              "protocol": "http",
+              "host": [
+                "localhost:8085"
+              ],
+              "path": [
+                "templates"
+              ],
+              "query": [
+                {
+                  "key": "channel",
+                  "value": "EMAIL"
+                }
+              ],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "Update Template",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-Client-ID",
+                "value": "demo-client",
+                "disabled": false,
+                "type": "default"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://localhost:8085/templates/ORDER_CONFIRMATION?channel=EMAIL",
+              "protocol": "http",
+              "host": [
+                "localhost:8085"
+              ],
+              "path": [
+                "templates",
+                "ORDER_CONFIRMATION"
+              ],
+              "query": [
+                {
+                  "key": "channel",
+                  "value": "EMAIL"
+                }
+              ],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"c82988b2-8def-4f3f-ac3a-6465bb626cac\",\n  \"clientId\": \"demo-client\",\n  \"channel\": \"EMAIL\",\n  \"templateCode\": \"ORDER_CONFIRMATION\",\n  \"version\": 2,\n  \"content\": \"Olá {{customerName}}! 🎉\\n\\nSeu pedido #{{orderId}} foi confirmado com sucesso!\\n\\nValor: R$ {{totalAmount}}\\n\\nAgradecemos sua compra.\",\n  \"subject\": \"✅ Pedido #{{orderId}} confirmado\",\n  \"variables\": [\n    \"totalAmount\",\n    \"orderId\",\n    \"customerName\"\n  ],\n  \"active\": true,\n  \"createdAt\": null,\n  \"updatedAt\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Render Template",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://localhost:8085/internal/v1/templates/render",
+              "protocol": "http",
+              "host": [
+                "localhost:8085"
+              ],
+              "path": [
+                "internal",
+                "v1",
+                "templates",
+                "render"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clientId\": \"demo-client\",\n  \"channel\": \"EMAIL\",\n  \"templateCode\": \"ORDER_CONFIRMATION\",\n  \"variables\": {\n    \"customerName\": \"João Silva\",\n    \"orderId\": \"12345\",\n    \"totalAmount\": \"150.00\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Preview Template",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Client-ID",
+                "value": "demo-client",
+                "disabled": false,
+                "type": "default"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://localhost:8085/templates/ORDER_CONFIRMATION/preview?channel=EMAIL",
+              "protocol": "http",
+              "host": [
+                "localhost:8085"
+              ],
+              "path": [
+                "templates",
+                "ORDER_CONFIRMATION",
+                "preview"
+              ],
+              "query": [
+                {
+                  "key": "channel",
+                  "value": "EMAIL"
+                }
+              ],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clientId\": \"demo-client\",\n  \"channel\": \"EMAIL\",\n  \"templateCode\": \"ORDER_CONFIRMATION\",\n  \"variables\": {\n    \"customerName\": \"João Silva\",\n    \"orderId\": \"12345\",\n    \"totalAmount\": \"150.00\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Get Template History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Client-ID",
+                "value": "demo-client",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://localhost:8085/templates/ORDER_CONFIRMATION/history?channel=EMAIL",
+              "protocol": "http",
+              "host": [
+                "localhost:8085"
+              ],
+              "path": [
+                "templates",
+                "ORDER_CONFIRMATION",
+                "history"
+              ],
+              "query": [
+                {
+                  "key": "channel",
+                  "value": "EMAIL"
+                }
+              ],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "Prometheus Metrics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://localhost:8085/actuator/prometheus",
+              "protocol": "http",
+              "host": [
+                "localhost:8085"
+              ],
+              "path": [
+                "actuator",
+                "prometheus"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "notification_host",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "$randomInt",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "audit_host",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "quota_host",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "template_host",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "customerName",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "orderId",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "totalAmount",
+      "value": "",
+      "type": "default"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          "await bru.sendRequest({",
+          "    url: 'http://localhost:8081/api/auth/login',",
+          "    method: 'POST',",
+          "    headers: 'Content-Type: application/json',",
+          "    data: JSON.stringify({ clientId: 'demo-client', password: 'demo123' })",
+          "}, async function(err, response) {",
+          "    if (err) {",
+          "        console.error(err);",
+          "    } else {",
+          "        if (response.status === 200) {",
+          "            var responseBody = response.data;",
+          "            bru.setVar('access_token', responseBody.token);",
+          "        } else {",
+          "            response.status;",
+          "        }",
+          "    }",
+          "});"
+        ]
+      }
+    }
+  ]
 }
