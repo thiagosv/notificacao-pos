@@ -42,189 +42,23 @@
             },
             "description": "",
             "url": {
-              "raw": "localhost:8090/audit/notifications/5449f86c-6d46-4fc6-89fb-642102794031",
-              "protocol": "",
+              "raw": "http://localhost:8090/audit/notifications/:id",
+              "protocol": "http",
               "host": [
                 "localhost:8090"
               ],
               "path": [
                 "audit",
                 "notifications",
-                "5449f86c-6d46-4fc6-89fb-642102794031"
+                ":id"
               ],
               "query": [],
-              "variable": []
-            }
-          }
-        }
-      ],
-      "event": [
-        {
-          "listen": "prerequest",
-          "script": {
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {},
-            "exec": [
-              "await bru.sendRequest({",
-              "    url: 'http://localhost:8081/api/auth/login',",
-              "    method: 'POST',",
-              "    headers: 'Content-Type: application/json',",
-              "    data: JSON.stringify({ clientId: 'demo-client', password: 'demo123' })",
-              "}, async function(err, response) {",
-              "    if (err) {",
-              "        console.error(err);",
-              "    } else {",
-              "        if (response.status === 200) {",
-              "            var responseBody = response.data;",
-              "            bru.setVar('access_token', responseBody.token);",
-              "        } else {",
-              "            response.status;",
-              "        }",
-              "    }",
-              "});"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "notificacao",
-      "item": [
-        {
-          "name": "get by Client ID",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "auth": {
-              "type": "noauth"
-            },
-            "description": "",
-            "url": {
-              "raw": "{{notification_host}}/notifications/client/demo-client",
-              "protocol": "",
-              "host": [
-                "{{notification_host}}"
-              ],
-              "path": [
-                "notifications",
-                "client",
-                "demo-client"
-              ],
-              "query": [],
-              "variable": []
-            }
-          }
-        },
-        {
-          "name": "get by ID",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "auth": {
-              "type": "noauth"
-            },
-            "description": "",
-            "url": {
-              "raw": "{{base_url}}/notifications/aa8279b9-bad7-4fbe-bc3c-e0ab7e582ff6",
-              "protocol": "",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "notifications",
-                "aa8279b9-bad7-4fbe-bc3c-e0ab7e582ff6"
-              ],
-              "query": [],
-              "variable": []
-            }
-          }
-        },
-        {
-          "name": "health",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "auth": {
-              "type": "noauth"
-            },
-            "description": "",
-            "url": {
-              "raw": "{{base_url}}/actuator/health",
-              "protocol": "",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "actuator",
-                "health"
-              ],
-              "query": [],
-              "variable": []
-            }
-          }
-        },
-        {
-          "name": "send",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "disabled": false,
-                "type": "default"
-              }
-            ],
-            "auth": {
-              "type": "noauth"
-            },
-            "description": "",
-            "url": {
-              "raw": "{{base_url}}/notifications/send",
-              "protocol": "",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "notifications",
-                "send"
-              ],
-              "query": [],
-              "variable": []
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"idempotencyKey\": \"test-email-{{$randomInt}}\",\n    \"clientId\": \"demo-client\",\n    \"channel\": \"EMAIL\",\n    \"recipient\": \"teste@email.com\",\n    \"templateCode\": \"ORDER_CONFIRMATION\",\n    \"variables\": {\n      \"customerName\": \"João Silva\",\n      \"orderId\": \"12345\",\n      \"totalAmount\": \"150.00\"\n    },\n    \"priority\": \"MEDIUM\",\n    \"maxRetries\": 3\n  }",
-              "options": {
-                "raw": {
-                  "language": "json"
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{notificationId}}"
                 }
-              }
-            }
-          }
-        },
-        {
-          "name": "stats",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "auth": {
-              "type": "noauth"
-            },
-            "description": "",
-            "url": {
-              "raw": "{{notification_host}}/notifications/stats",
-              "protocol": "",
-              "host": [
-                "{{notification_host}}"
-              ],
-              "path": [
-                "notifications",
-                "stats"
-              ],
-              "query": [],
-              "variable": []
+              ]
             }
           }
         }
@@ -417,7 +251,7 @@
                     },
                     "description": "",
                     "url": {
-                      "raw": "{{audit_host}}/audit/notifications/969e97a1-4b53-4edd-b6d5-a7bdb792db07",
+                      "raw": "{{audit_host}}/audit/notifications/:id",
                       "protocol": "",
                       "host": [
                         "{{audit_host}}"
@@ -425,10 +259,15 @@
                       "path": [
                         "audit",
                         "notifications",
-                        "969e97a1-4b53-4edd-b6d5-a7bdb792db07"
+                        ":id"
                       ],
                       "query": [],
-                      "variable": []
+                      "variable": [
+                        {
+                          "key": "id",
+                          "value": "{{notificationId}}"
+                        }
+                      ]
                     }
                   }
                 },
@@ -453,6 +292,423 @@
                       ],
                       "query": [],
                       "variable": []
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "name": "template",
+              "item": [
+                {
+                  "name": "Create Template",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "X-Client-ID",
+                        "value": "demo-client",
+                        "disabled": false,
+                        "type": "default"
+                      },
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "disabled": false,
+                        "type": "default"
+                      }
+                    ],
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "description": "",
+                    "url": {
+                      "raw": "{{template_host}}/templates",
+                      "protocol": "",
+                      "host": [
+                        "{{template_host}}"
+                      ],
+                      "path": [
+                        "templates"
+                      ],
+                      "query": [],
+                      "variable": []
+                    },
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"templateCode\": \"ORDER_CANCELLED\",\n  \"channel\": \"EMAIL\",\n  \"content\": \"Olá {{customerName}},\\n\\nSeu pedido #{{orderId}} foi cancelado com sucesso!\\n\\nTotal: R$ {{totalAmount}}\\n\\nObrigado pela preferência!\",\n  \"subject\": \"✅ Pedido #{{orderId}} cancelado\",\n  \"variables\": [\"customerName\", \"orderId\", \"totalAmount\"]\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "name": "Delete Template",
+                  "request": {
+                    "method": "DELETE",
+                    "header": [
+                      {
+                        "key": "X-Client-ID",
+                        "value": "demo-client",
+                        "disabled": false,
+                        "type": "default"
+                      }
+                    ],
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "description": "",
+                    "url": {
+                      "raw": "{{template_host}}/templates/ORDER_CONFIRMATION?channel=EMAIL",
+                      "protocol": "",
+                      "host": [
+                        "{{template_host}}"
+                      ],
+                      "path": [
+                        "templates",
+                        "ORDER_CONFIRMATION?channel=EMAIL"
+                      ],
+                      "query": [
+                        {
+                          "key": "channel",
+                          "value": "EMAIL"
+                        }
+                      ],
+                      "variable": []
+                    }
+                  }
+                },
+                {
+                  "name": "Get Template History",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "X-Client-ID",
+                        "value": "demo-client",
+                        "disabled": false,
+                        "type": "default"
+                      }
+                    ],
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "description": "",
+                    "url": {
+                      "raw": "{{template_host}}/templates/ORDER_CONFIRMATION/history?channel=EMAIL",
+                      "protocol": "",
+                      "host": [
+                        "{{template_host}}"
+                      ],
+                      "path": [
+                        "templates",
+                        "ORDER_CONFIRMATION",
+                        "history?channel=EMAIL"
+                      ],
+                      "query": [
+                        {
+                          "key": "channel",
+                          "value": "EMAIL"
+                        }
+                      ],
+                      "variable": []
+                    }
+                  }
+                },
+                {
+                  "name": "Get Template",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "X-Client-ID",
+                        "value": "demo-client",
+                        "disabled": false,
+                        "type": "default"
+                      }
+                    ],
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "description": "",
+                    "url": {
+                      "raw": "{{template_host}}/templates/DELIVERY_NOTIFICATION?channel=SMS",
+                      "protocol": "",
+                      "host": [
+                        "{{template_host}}"
+                      ],
+                      "path": [
+                        "templates",
+                        "DELIVERY_NOTIFICATION?channel=SMS"
+                      ],
+                      "query": [
+                        {
+                          "key": "channel",
+                          "value": "SMS"
+                        }
+                      ],
+                      "variable": []
+                    }
+                  }
+                },
+                {
+                  "name": "Health Check",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "description": "",
+                    "url": {
+                      "raw": "{{template_host}}/actuator/health",
+                      "protocol": "",
+                      "host": [
+                        "{{template_host}}"
+                      ],
+                      "path": [
+                        "actuator",
+                        "health"
+                      ],
+                      "query": [],
+                      "variable": []
+                    }
+                  }
+                },
+                {
+                  "name": "List Templates by Channel",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "X-Client-ID",
+                        "value": "demo-client",
+                        "disabled": false,
+                        "type": "default"
+                      }
+                    ],
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "description": "",
+                    "url": {
+                      "raw": "{{template_host}}/templates?channel=SMS",
+                      "protocol": "",
+                      "host": [
+                        "{{template_host}}"
+                      ],
+                      "path": [
+                        "templates?channel=SMS"
+                      ],
+                      "query": [
+                        {
+                          "key": "channel",
+                          "value": "SMS"
+                        }
+                      ],
+                      "variable": []
+                    }
+                  }
+                },
+                {
+                  "name": "List Templates",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "X-Client-ID",
+                        "value": "demo-client",
+                        "disabled": false,
+                        "type": "default"
+                      }
+                    ],
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "description": "",
+                    "url": {
+                      "raw": "{{template_host}}/templates",
+                      "protocol": "",
+                      "host": [
+                        "{{template_host}}"
+                      ],
+                      "path": [
+                        "templates"
+                      ],
+                      "query": [],
+                      "variable": []
+                    }
+                  }
+                },
+                {
+                  "name": "Preview Template",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "X-Client-ID",
+                        "value": "demo-client",
+                        "disabled": false,
+                        "type": "default"
+                      },
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "disabled": false,
+                        "type": "default"
+                      }
+                    ],
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "description": "",
+                    "url": {
+                      "raw": "{{template_host}}/templates/ORDER_CONFIRMATION/preview?channel=EMAIL",
+                      "protocol": "",
+                      "host": [
+                        "{{template_host}}"
+                      ],
+                      "path": [
+                        "templates",
+                        "ORDER_CONFIRMATION",
+                        "preview?channel=EMAIL"
+                      ],
+                      "query": [
+                        {
+                          "key": "channel",
+                          "value": "EMAIL"
+                        }
+                      ],
+                      "variable": []
+                    },
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"clientId\": \"demo-client\",\n  \"channel\": \"EMAIL\",\n  \"templateCode\": \"ORDER_CONFIRMATION\",\n  \"variables\": {\n    \"customerName\": \"João Silva\",\n    \"orderId\": \"12345\",\n    \"totalAmount\": \"150.00\"\n  }\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "name": "Prometheus Metrics",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "description": "",
+                    "url": {
+                      "raw": "{{template_host}}/actuator/prometheus",
+                      "protocol": "",
+                      "host": [
+                        "{{template_host}}"
+                      ],
+                      "path": [
+                        "actuator",
+                        "prometheus"
+                      ],
+                      "query": [],
+                      "variable": []
+                    }
+                  }
+                },
+                {
+                  "name": "Render Template",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "disabled": false,
+                        "type": "default"
+                      }
+                    ],
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "description": "",
+                    "url": {
+                      "raw": "{{template_host}}/internal/v1/templates/render",
+                      "protocol": "",
+                      "host": [
+                        "{{template_host}}"
+                      ],
+                      "path": [
+                        "internal",
+                        "v1",
+                        "templates",
+                        "render"
+                      ],
+                      "query": [],
+                      "variable": []
+                    },
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"clientId\": \"demo-client\",\n  \"channel\": \"EMAIL\",\n  \"templateCode\": \"ORDER_CONFIRMATION\",\n  \"variables\": {\n    \"customerName\": \"João Silva\",\n    \"orderId\": \"12345\",\n    \"totalAmount\": \"150.00\"\n  }\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "name": "Update Template",
+                  "request": {
+                    "method": "PUT",
+                    "header": [
+                      {
+                        "key": "X-Client-ID",
+                        "value": "demo-client",
+                        "disabled": false,
+                        "type": "default"
+                      },
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "disabled": false,
+                        "type": "default"
+                      }
+                    ],
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "description": "",
+                    "url": {
+                      "raw": "{{template_host}}/templates/ORDER_CONFIRMATION?channel=EMAIL",
+                      "protocol": "",
+                      "host": [
+                        "{{template_host}}"
+                      ],
+                      "path": [
+                        "templates",
+                        "ORDER_CONFIRMATION?channel=EMAIL"
+                      ],
+                      "query": [
+                        {
+                          "key": "channel",
+                          "value": "EMAIL"
+                        }
+                      ],
+                      "variable": []
+                    },
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"c82988b2-8def-4f3f-ac3a-6465bb626cac\",\n  \"clientId\": \"demo-client\",\n  \"channel\": \"EMAIL\",\n  \"templateCode\": \"ORDER_CONFIRMATION\",\n  \"version\": 2,\n  \"content\": \"Olá {{customerName}}, seu pedido #{{orderId}} foi confirmado com sucesso!\",\n  \"subject\": \"✅ Pedido #{{orderId}} confirmado\",\n  \"variables\": [\n    \"orderId\",\n    \"customerName\"\n  ],\n  \"active\": true,\n  \"createdAt\": null,\n  \"updatedAt\": null\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
                     }
                   }
                 }
@@ -509,7 +765,7 @@
                       "variable": [
                         {
                           "key": "id",
-                          "value": "56507a5d-9e56-4f44-b714-d42a0e937689"
+                          "value": "{{notificationId}}"
                         }
                       ]
                     }
@@ -570,7 +826,7 @@
                     },
                     "body": {
                       "mode": "raw",
-                      "raw": "{\n    \"idempotencyKey\": \"test-email-{{$randomInt}}\",\n    \"clientId\": \"demo-client\",\n    \"channel\": \"SMS\",\n    \"recipient\": \"teste@email.com\",\n    \"templateCode\": \"DELIVERY_NOTIFICATION\",\n    \"variables\": {\n      \"orderId\": \"12345\",\n      \"deliveryTime\": 150.0\n    },\n    \"priority\": \"MEDIUM\",\n    \"maxRetries\": 3\n  }",
+                      "raw": "{\n    \"idempotencyKey\": \"test-email-{{$randomInt}}\",\n    \"clientId\": \"demo-client\",\n    \"channel\": \"SMS\",\n    \"recipient\": \"teste@email.com\",\n    \"templateCode\": \"DELIVERY_NOTIFICATION\",\n    \"variables\": {\n      \"orderId\": \"12345\",\n      \"deliveryTime\": \"15:00\"\n    },\n    \"priority\": \"MEDIUM\",\n    \"maxRetries\": 3\n  }",
                       "options": {
                         "raw": {
                           "language": "json"
@@ -591,6 +847,17 @@
                           "// body.idempotencyKey = body.idempotencyKey + randomInt",
                           "// // pm.request.body.raw = body;",
                           ""
+                        ]
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {},
+                        "exec": [
+                          "bru.setEnvVar(\"notificationId\", res.body.notificationId)"
                         ]
                       }
                     }
@@ -1098,425 +1365,179 @@
                   }
                 }
               ]
-            },
-            {
-              "name": "template",
-              "item": [
-                {
-                  "name": "Get Template",
-                  "request": {
-                    "method": "GET",
-                    "header": [
-                      {
-                        "key": "X-Client-ID",
-                        "value": "demo-client",
-                        "disabled": false,
-                        "type": "default"
-                      }
-                    ],
-                    "auth": {
-                      "type": "noauth"
-                    },
-                    "description": "",
-                    "url": {
-                      "raw": "{{template_host}}/templates/DELIVERY_NOTIFICATION?channel=SMS",
-                      "protocol": "",
-                      "host": [
-                        "{{template_host}}"
-                      ],
-                      "path": [
-                        "templates",
-                        "DELIVERY_NOTIFICATION?channel=SMS"
-                      ],
-                      "query": [
-                        {
-                          "key": "channel",
-                          "value": "SMS"
-                        }
-                      ],
-                      "variable": []
-                    }
-                  }
-                },
-                {
-                  "name": "Render Template",
-                  "request": {
-                    "method": "POST",
-                    "header": [
-                      {
-                        "key": "Content-Type",
-                        "value": "application/json",
-                        "disabled": false,
-                        "type": "default"
-                      }
-                    ],
-                    "auth": {
-                      "type": "noauth"
-                    },
-                    "description": "",
-                    "url": {
-                      "raw": "{{template_host}}/internal/v1/templates/render",
-                      "protocol": "",
-                      "host": [
-                        "{{template_host}}"
-                      ],
-                      "path": [
-                        "internal",
-                        "v1",
-                        "templates",
-                        "render"
-                      ],
-                      "query": [],
-                      "variable": []
-                    },
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\n  \"clientId\": \"demo-client\",\n  \"channel\": \"EMAIL\",\n  \"templateCode\": \"ORDER_CONFIRMATION\",\n  \"variables\": {\n    \"customerName\": \"João Silva\",\n    \"orderId\": \"12345\",\n    \"totalAmount\": \"150.00\"\n  }\n}",
-                      "options": {
-                        "raw": {
-                          "language": "json"
-                        }
-                      }
-                    }
-                  }
-                },
-                {
-                  "name": "Delete Template",
-                  "request": {
-                    "method": "DELETE",
-                    "header": [
-                      {
-                        "key": "X-Client-ID",
-                        "value": "demo-client",
-                        "disabled": false,
-                        "type": "default"
-                      }
-                    ],
-                    "auth": {
-                      "type": "noauth"
-                    },
-                    "description": "",
-                    "url": {
-                      "raw": "{{template_host}}/templates/ORDER_CONFIRMATION?channel=EMAIL",
-                      "protocol": "",
-                      "host": [
-                        "{{template_host}}"
-                      ],
-                      "path": [
-                        "templates",
-                        "ORDER_CONFIRMATION?channel=EMAIL"
-                      ],
-                      "query": [
-                        {
-                          "key": "channel",
-                          "value": "EMAIL"
-                        }
-                      ],
-                      "variable": []
-                    }
-                  }
-                },
-                {
-                  "name": "Get Template History",
-                  "request": {
-                    "method": "GET",
-                    "header": [
-                      {
-                        "key": "X-Client-ID",
-                        "value": "demo-client",
-                        "disabled": false,
-                        "type": "default"
-                      }
-                    ],
-                    "auth": {
-                      "type": "noauth"
-                    },
-                    "description": "",
-                    "url": {
-                      "raw": "{{template_host}}/templates/ORDER_CONFIRMATION/history?channel=EMAIL",
-                      "protocol": "",
-                      "host": [
-                        "{{template_host}}"
-                      ],
-                      "path": [
-                        "templates",
-                        "ORDER_CONFIRMATION",
-                        "history?channel=EMAIL"
-                      ],
-                      "query": [
-                        {
-                          "key": "channel",
-                          "value": "EMAIL"
-                        }
-                      ],
-                      "variable": []
-                    }
-                  }
-                },
-                {
-                  "name": "Preview Template",
-                  "request": {
-                    "method": "POST",
-                    "header": [
-                      {
-                        "key": "X-Client-ID",
-                        "value": "demo-client",
-                        "disabled": false,
-                        "type": "default"
-                      },
-                      {
-                        "key": "Content-Type",
-                        "value": "application/json",
-                        "disabled": false,
-                        "type": "default"
-                      }
-                    ],
-                    "auth": {
-                      "type": "noauth"
-                    },
-                    "description": "",
-                    "url": {
-                      "raw": "{{template_host}}/templates/ORDER_CONFIRMATION/preview?channel=EMAIL",
-                      "protocol": "",
-                      "host": [
-                        "{{template_host}}"
-                      ],
-                      "path": [
-                        "templates",
-                        "ORDER_CONFIRMATION",
-                        "preview?channel=EMAIL"
-                      ],
-                      "query": [
-                        {
-                          "key": "channel",
-                          "value": "EMAIL"
-                        }
-                      ],
-                      "variable": []
-                    },
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\n  \"clientId\": \"demo-client\",\n  \"channel\": \"EMAIL\",\n  \"templateCode\": \"ORDER_CONFIRMATION\",\n  \"variables\": {\n    \"customerName\": \"João Silva\",\n    \"orderId\": \"12345\",\n    \"totalAmount\": \"150.00\"\n  }\n}",
-                      "options": {
-                        "raw": {
-                          "language": "json"
-                        }
-                      }
-                    }
-                  }
-                },
-                {
-                  "name": "Update Template",
-                  "request": {
-                    "method": "PUT",
-                    "header": [
-                      {
-                        "key": "X-Client-ID",
-                        "value": "demo-client",
-                        "disabled": false,
-                        "type": "default"
-                      },
-                      {
-                        "key": "Content-Type",
-                        "value": "application/json",
-                        "disabled": false,
-                        "type": "default"
-                      }
-                    ],
-                    "auth": {
-                      "type": "noauth"
-                    },
-                    "description": "",
-                    "url": {
-                      "raw": "{{template_host}}/templates/ORDER_CONFIRMATION?channel=EMAIL",
-                      "protocol": "",
-                      "host": [
-                        "{{template_host}}"
-                      ],
-                      "path": [
-                        "templates",
-                        "ORDER_CONFIRMATION?channel=EMAIL"
-                      ],
-                      "query": [
-                        {
-                          "key": "channel",
-                          "value": "EMAIL"
-                        }
-                      ],
-                      "variable": []
-                    },
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\n  \"id\": \"c82988b2-8def-4f3f-ac3a-6465bb626cac\",\n  \"clientId\": \"demo-client\",\n  \"channel\": \"EMAIL\",\n  \"templateCode\": \"ORDER_CONFIRMATION\",\n  \"version\": 2,\n  \"content\": \"Olá {{customerName}}, seu pedido #{{orderId}} foi confirmado com sucesso!\",\n  \"subject\": \"✅ Pedido #{{orderId}} confirmado\",\n  \"variables\": [\n    \"orderId\",\n    \"customerName\"\n  ],\n  \"active\": true,\n  \"createdAt\": null,\n  \"updatedAt\": null\n}",
-                      "options": {
-                        "raw": {
-                          "language": "json"
-                        }
-                      }
-                    }
-                  }
-                },
-                {
-                  "name": "Health Check",
-                  "request": {
-                    "method": "GET",
-                    "header": [],
-                    "auth": {
-                      "type": "noauth"
-                    },
-                    "description": "",
-                    "url": {
-                      "raw": "{{template_host}}/actuator/health",
-                      "protocol": "",
-                      "host": [
-                        "{{template_host}}"
-                      ],
-                      "path": [
-                        "actuator",
-                        "health"
-                      ],
-                      "query": [],
-                      "variable": []
-                    }
-                  }
-                },
-                {
-                  "name": "Create Template",
-                  "request": {
-                    "method": "POST",
-                    "header": [
-                      {
-                        "key": "X-Client-ID",
-                        "value": "demo-client",
-                        "disabled": false,
-                        "type": "default"
-                      },
-                      {
-                        "key": "Content-Type",
-                        "value": "application/json",
-                        "disabled": false,
-                        "type": "default"
-                      }
-                    ],
-                    "auth": {
-                      "type": "noauth"
-                    },
-                    "description": "",
-                    "url": {
-                      "raw": "{{template_host}}/templates",
-                      "protocol": "",
-                      "host": [
-                        "{{template_host}}"
-                      ],
-                      "path": [
-                        "templates"
-                      ],
-                      "query": [],
-                      "variable": []
-                    },
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\n  \"templateCode\": \"ORDER_CANCELLED\",\n  \"channel\": \"EMAIL\",\n  \"content\": \"Olá {{customerName}},\\n\\nSeu pedido #{{orderId}} foi cancelado com sucesso!\\n\\nTotal: R$ {{totalAmount}}\\n\\nObrigado pela preferência!\",\n  \"subject\": \"✅ Pedido #{{orderId}} cancelado\",\n  \"variables\": [\"customerName\", \"orderId\", \"totalAmount\"]\n}",
-                      "options": {
-                        "raw": {
-                          "language": "json"
-                        }
-                      }
-                    }
-                  }
-                },
-                {
-                  "name": "List Templates by Channel",
-                  "request": {
-                    "method": "GET",
-                    "header": [
-                      {
-                        "key": "X-Client-ID",
-                        "value": "demo-client",
-                        "disabled": false,
-                        "type": "default"
-                      }
-                    ],
-                    "auth": {
-                      "type": "noauth"
-                    },
-                    "description": "",
-                    "url": {
-                      "raw": "{{template_host}}/templates?channel=SMS",
-                      "protocol": "",
-                      "host": [
-                        "{{template_host}}"
-                      ],
-                      "path": [
-                        "templates?channel=SMS"
-                      ],
-                      "query": [
-                        {
-                          "key": "channel",
-                          "value": "SMS"
-                        }
-                      ],
-                      "variable": []
-                    }
-                  }
-                },
-                {
-                  "name": "List Templates",
-                  "request": {
-                    "method": "GET",
-                    "header": [
-                      {
-                        "key": "X-Client-ID",
-                        "value": "demo-client",
-                        "disabled": false,
-                        "type": "default"
-                      }
-                    ],
-                    "auth": {
-                      "type": "noauth"
-                    },
-                    "description": "",
-                    "url": {
-                      "raw": "{{template_host}}/templates",
-                      "protocol": "",
-                      "host": [
-                        "{{template_host}}"
-                      ],
-                      "path": [
-                        "templates"
-                      ],
-                      "query": [],
-                      "variable": []
-                    }
-                  }
-                },
-                {
-                  "name": "Prometheus Metrics",
-                  "request": {
-                    "method": "GET",
-                    "header": [],
-                    "auth": {
-                      "type": "noauth"
-                    },
-                    "description": "",
-                    "url": {
-                      "raw": "{{template_host}}/actuator/prometheus",
-                      "protocol": "",
-                      "host": [
-                        "{{template_host}}"
-                      ],
-                      "path": [
-                        "actuator",
-                        "prometheus"
-                      ],
-                      "query": [],
-                      "variable": []
-                    }
-                  }
-                }
-              ]
             }
           ]
+        }
+      ]
+    },
+    {
+      "name": "notificacao",
+      "item": [
+        {
+          "name": "get by Client ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{notification_host}}/notifications/client/demo-client",
+              "protocol": "",
+              "host": [
+                "{{notification_host}}"
+              ],
+              "path": [
+                "notifications",
+                "client",
+                "demo-client"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "get by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{base_url}}/notifications/aa8279b9-bad7-4fbe-bc3c-e0ab7e582ff6",
+              "protocol": "",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notifications",
+                "aa8279b9-bad7-4fbe-bc3c-e0ab7e582ff6"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{base_url}}/actuator/health",
+              "protocol": "",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "actuator",
+                "health"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "send",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{base_url}}/notifications/send",
+              "protocol": "",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notifications",
+                "send"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"idempotencyKey\": \"test-email-{{$randomInt}}\",\n    \"clientId\": \"demo-client\",\n    \"channel\": \"EMAIL\",\n    \"recipient\": \"teste@email.com\",\n    \"templateCode\": \"ORDER_CONFIRMATION\",\n    \"variables\": {\n      \"customerName\": \"João Silva\",\n      \"orderId\": \"12345\",\n      \"totalAmount\": \"150.00\"\n    },\n    \"priority\": \"MEDIUM\",\n    \"maxRetries\": 3\n  }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{notification_host}}/notifications/stats",
+              "protocol": "",
+              "host": [
+                "{{notification_host}}"
+              ],
+              "path": [
+                "notifications",
+                "stats"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        }
+      ],
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              "await bru.sendRequest({",
+              "    url: 'http://localhost:8081/api/auth/login',",
+              "    method: 'POST',",
+              "    headers: 'Content-Type: application/json',",
+              "    data: JSON.stringify({ clientId: 'demo-client', password: 'demo123' })",
+              "}, async function(err, response) {",
+              "    if (err) {",
+              "        console.error(err);",
+              "    } else {",
+              "        if (response.status === 200) {",
+              "            var responseBody = response.data;",
+              "            bru.setVar('access_token', responseBody.token);",
+              "        } else {",
+              "            response.status;",
+              "        }",
+              "    }",
+              "});"
+            ]
+          }
         }
       ]
     },
@@ -1546,181 +1567,6 @@
               "variable": []
             }
           }
-        },
-        {
-          "name": "uso",
-          "item": [
-            {
-              "name": "Aumenta quota",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "auth": {
-                  "type": "noauth"
-                },
-                "description": "",
-                "url": {
-                  "raw": "http://localhost:8083/quotas/release?clientId=demo-client&channel=EMAIL&amount=200&notificationId=test-notif-001",
-                  "protocol": "http",
-                  "host": [
-                    "localhost:8083"
-                  ],
-                  "path": [
-                    "quotas",
-                    "release"
-                  ],
-                  "query": [
-                    {
-                      "key": "clientId",
-                      "value": "demo-client"
-                    },
-                    {
-                      "key": "channel",
-                      "value": "EMAIL"
-                    },
-                    {
-                      "key": "amount",
-                      "value": "200"
-                    },
-                    {
-                      "key": "notificationId",
-                      "value": "test-notif-001"
-                    }
-                  ],
-                  "variable": []
-                }
-              }
-            },
-            {
-              "name": "Detalhes por canal",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "auth": {
-                  "type": "noauth"
-                },
-                "description": "",
-                "url": {
-                  "raw": "http://localhost:8083/quotas/:clientId/:canal",
-                  "protocol": "http",
-                  "host": [
-                    "localhost:8083"
-                  ],
-                  "path": [
-                    "quotas",
-                    ":clientId",
-                    ":canal"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "key": "clientId",
-                      "value": "demo-client"
-                    },
-                    {
-                      "key": "canal",
-                      "value": "EMAIL"
-                    }
-                  ]
-                }
-              }
-            },
-            {
-              "name": "Detalhes",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "auth": {
-                  "type": "noauth"
-                },
-                "description": "",
-                "url": {
-                  "raw": "http://localhost:8083/quotas/:clientId",
-                  "protocol": "http",
-                  "host": [
-                    "localhost:8083"
-                  ],
-                  "path": [
-                    "quotas",
-                    ":clientId"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "key": "clientId",
-                      "value": "demo-client"
-                    }
-                  ]
-                }
-              }
-            },
-            {
-              "name": "Valida e consome",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "auth": {
-                  "type": "noauth"
-                },
-                "description": "",
-                "url": {
-                  "raw": "http://localhost:8083/quotas/validate",
-                  "protocol": "http",
-                  "host": [
-                    "localhost:8083"
-                  ],
-                  "path": [
-                    "quotas",
-                    "validate"
-                  ],
-                  "query": [],
-                  "variable": []
-                },
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"clientId\": \"demo-client\",\n    \"channel\": \"EMAIL\",\n    \"amount\": 33,\n    \"notificationId\": \"test-001\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                }
-              }
-            },
-            {
-              "name": "Valida",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "auth": {
-                  "type": "noauth"
-                },
-                "description": "",
-                "url": {
-                  "raw": "http://localhost:8083/quotas/check",
-                  "protocol": "http",
-                  "host": [
-                    "localhost:8083"
-                  ],
-                  "path": [
-                    "quotas",
-                    "check"
-                  ],
-                  "query": [],
-                  "variable": []
-                },
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"clientId\": \"demo-client\",\n    \"channel\": \"EMAIL\",\n    \"amount\": 5,\n    \"notificationId\": \"test-001\"\n  }",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                }
-              }
-            }
-          ]
         },
         {
           "name": "admin",
@@ -1936,6 +1782,181 @@
               }
             }
           ]
+        },
+        {
+          "name": "uso",
+          "item": [
+            {
+              "name": "Aumenta quota",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "",
+                "url": {
+                  "raw": "http://localhost:8083/quotas/release?clientId=demo-client&channel=EMAIL&amount=200&notificationId=test-notif-001",
+                  "protocol": "http",
+                  "host": [
+                    "localhost:8083"
+                  ],
+                  "path": [
+                    "quotas",
+                    "release"
+                  ],
+                  "query": [
+                    {
+                      "key": "clientId",
+                      "value": "demo-client"
+                    },
+                    {
+                      "key": "channel",
+                      "value": "EMAIL"
+                    },
+                    {
+                      "key": "amount",
+                      "value": "200"
+                    },
+                    {
+                      "key": "notificationId",
+                      "value": "test-notif-001"
+                    }
+                  ],
+                  "variable": []
+                }
+              }
+            },
+            {
+              "name": "Detalhes por canal",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "",
+                "url": {
+                  "raw": "http://localhost:8083/quotas/:clientId/:canal",
+                  "protocol": "http",
+                  "host": [
+                    "localhost:8083"
+                  ],
+                  "path": [
+                    "quotas",
+                    ":clientId",
+                    ":canal"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "key": "clientId",
+                      "value": "demo-client"
+                    },
+                    {
+                      "key": "canal",
+                      "value": "EMAIL"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Detalhes",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "",
+                "url": {
+                  "raw": "http://localhost:8083/quotas/:clientId",
+                  "protocol": "http",
+                  "host": [
+                    "localhost:8083"
+                  ],
+                  "path": [
+                    "quotas",
+                    ":clientId"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "key": "clientId",
+                      "value": "demo-client"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Valida e consome",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "",
+                "url": {
+                  "raw": "http://localhost:8083/quotas/validate",
+                  "protocol": "http",
+                  "host": [
+                    "localhost:8083"
+                  ],
+                  "path": [
+                    "quotas",
+                    "validate"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"clientId\": \"demo-client\",\n    \"channel\": \"EMAIL\",\n    \"amount\": 33,\n    \"notificationId\": \"test-001\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Valida",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "",
+                "url": {
+                  "raw": "http://localhost:8083/quotas/check",
+                  "protocol": "http",
+                  "host": [
+                    "localhost:8083"
+                  ],
+                  "path": [
+                    "quotas",
+                    "check"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"clientId\": \"demo-client\",\n    \"channel\": \"EMAIL\",\n    \"amount\": 5,\n    \"notificationId\": \"test-001\"\n  }",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
         }
       ],
       "event": [
@@ -1969,34 +1990,45 @@
       ]
     },
     {
-      "name": "wiremock",
+      "name": "template",
       "item": [
         {
-          "name": "push",
+          "name": "Create Template",
           "request": {
             "method": "POST",
-            "header": [],
+            "header": [
+              {
+                "key": "X-Client-ID",
+                "value": "demo-client",
+                "disabled": false,
+                "type": "default"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
             "auth": {
               "type": "noauth"
             },
             "description": "",
             "url": {
-              "raw": "http://localhost:8080/email/primary/send",
+              "raw": "http://localhost:8085/templates",
               "protocol": "http",
               "host": [
-                "localhost:8080"
+                "localhost:8085"
               ],
               "path": [
-                "email",
-                "primary",
-                "send"
+                "templates"
               ],
               "query": [],
               "variable": []
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"idempotencyKey\": \"test-email-009\",\n    \"clientId\": \"demo-client\",\n    \"channel\": \"EMAIL\",\n    \"recipient\": \"sada12312dfaf!@SAF3231ad\",\n    \"subject\": \"Welcome to our platform!\",\n    \"content\": \"Hello! This is a test email notification.\",\n    \"priority\": \"MEDIUM\",\n    \"maxRetries\": 3\n}",
+              "raw": "{\n  \"templateCode\": \"ORDER_CONFIRMATION\",\n  \"channel\": \"EMAIL\",\n  \"content\": \"Olá {{customerName}},\\n\\nSeu pedido #{{orderId}} foi confirmado com sucesso!\\n\\nTotal: R$ {{totalAmount}}\\n\\nObrigado pela preferência!\",\n  \"subject\": \"✅ Pedido #{{orderId}} confirmado\",\n  \"variables\": [\"customerName\", \"orderId\", \"totalAmount\"]\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2004,16 +2036,84 @@
               }
             }
           }
-        }
-      ]
-    },
-    {
-      "name": "template",
-      "item": [
+        },
         {
           "name": "Delete Template",
           "request": {
             "method": "DELETE",
+            "header": [
+              {
+                "key": "X-Client-ID",
+                "value": "demo-client",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://localhost:8085/templates/ORDER_CONFIRMATION?channel=EMAIL",
+              "protocol": "http",
+              "host": [
+                "localhost:8085"
+              ],
+              "path": [
+                "templates",
+                "ORDER_CONFIRMATION"
+              ],
+              "query": [
+                {
+                  "key": "channel",
+                  "value": "EMAIL"
+                }
+              ],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "Get Template History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Client-ID",
+                "value": "demo-client",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://localhost:8085/templates/ORDER_CONFIRMATION/history?channel=EMAIL",
+              "protocol": "http",
+              "host": [
+                "localhost:8085"
+              ],
+              "path": [
+                "templates",
+                "ORDER_CONFIRMATION",
+                "history"
+              ],
+              "query": [
+                {
+                  "key": "channel",
+                  "value": "EMAIL"
+                }
+              ],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "Get Template",
+          "request": {
+            "method": "GET",
             "header": [
               {
                 "key": "X-Client-ID",
@@ -2071,52 +2171,7 @@
           }
         },
         {
-          "name": "Create Template",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "X-Client-ID",
-                "value": "demo-client",
-                "disabled": false,
-                "type": "default"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "disabled": false,
-                "type": "default"
-              }
-            ],
-            "auth": {
-              "type": "noauth"
-            },
-            "description": "",
-            "url": {
-              "raw": "http://localhost:8085/templates",
-              "protocol": "http",
-              "host": [
-                "localhost:8085"
-              ],
-              "path": [
-                "templates"
-              ],
-              "query": [],
-              "variable": []
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"templateCode\": \"ORDER_CONFIRMATION\",\n  \"channel\": \"EMAIL\",\n  \"content\": \"Olá {{customerName}},\\n\\nSeu pedido #{{orderId}} foi confirmado com sucesso!\\n\\nTotal: R$ {{totalAmount}}\\n\\nObrigado pela preferência!\",\n  \"subject\": \"✅ Pedido #{{orderId}} confirmado\",\n  \"variables\": [\"customerName\", \"orderId\", \"totalAmount\"]\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          }
-        },
-        {
-          "name": "Get Template",
+          "name": "List Templates by Channel",
           "request": {
             "method": "GET",
             "header": [
@@ -2132,14 +2187,13 @@
             },
             "description": "",
             "url": {
-              "raw": "http://localhost:8085/templates/ORDER_CONFIRMATION?channel=EMAIL",
+              "raw": "http://localhost:8085/templates?channel=EMAIL",
               "protocol": "http",
               "host": [
                 "localhost:8085"
               ],
               "path": [
-                "templates",
-                "ORDER_CONFIRMATION"
+                "templates"
               ],
               "query": [
                 {
@@ -2178,134 +2232,6 @@
               ],
               "query": [],
               "variable": []
-            }
-          }
-        },
-        {
-          "name": "List Templates by Channel",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "X-Client-ID",
-                "value": "demo-client",
-                "disabled": false,
-                "type": "default"
-              }
-            ],
-            "auth": {
-              "type": "noauth"
-            },
-            "description": "",
-            "url": {
-              "raw": "http://localhost:8085/templates?channel=EMAIL",
-              "protocol": "http",
-              "host": [
-                "localhost:8085"
-              ],
-              "path": [
-                "templates"
-              ],
-              "query": [
-                {
-                  "key": "channel",
-                  "value": "EMAIL"
-                }
-              ],
-              "variable": []
-            }
-          }
-        },
-        {
-          "name": "Update Template",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "X-Client-ID",
-                "value": "demo-client",
-                "disabled": false,
-                "type": "default"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "disabled": false,
-                "type": "default"
-              }
-            ],
-            "auth": {
-              "type": "noauth"
-            },
-            "description": "",
-            "url": {
-              "raw": "http://localhost:8085/templates/ORDER_CONFIRMATION?channel=EMAIL",
-              "protocol": "http",
-              "host": [
-                "localhost:8085"
-              ],
-              "path": [
-                "templates",
-                "ORDER_CONFIRMATION"
-              ],
-              "query": [
-                {
-                  "key": "channel",
-                  "value": "EMAIL"
-                }
-              ],
-              "variable": []
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"id\": \"c82988b2-8def-4f3f-ac3a-6465bb626cac\",\n  \"clientId\": \"demo-client\",\n  \"channel\": \"EMAIL\",\n  \"templateCode\": \"ORDER_CONFIRMATION\",\n  \"version\": 2,\n  \"content\": \"Olá {{customerName}}! 🎉\\n\\nSeu pedido #{{orderId}} foi confirmado com sucesso!\\n\\nValor: R$ {{totalAmount}}\\n\\nAgradecemos sua compra!\",\n  \"subject\": \"✅ Pedido #{{orderId}} confirmado\",\n  \"variables\": [\n    \"totalAmount\",\n    \"orderId\",\n    \"customerName\"\n  ],\n  \"active\": true,\n  \"createdAt\": null,\n  \"updatedAt\": null\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          }
-        },
-        {
-          "name": "Render Template",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "disabled": false,
-                "type": "default"
-              }
-            ],
-            "auth": {
-              "type": "noauth"
-            },
-            "description": "",
-            "url": {
-              "raw": "http://localhost:8085/internal/v1/templates/render",
-              "protocol": "http",
-              "host": [
-                "localhost:8085"
-              ],
-              "path": [
-                "internal",
-                "v1",
-                "templates",
-                "render"
-              ],
-              "query": [],
-              "variable": []
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"clientId\": \"demo-client\",\n  \"channel\": \"EMAIL\",\n  \"templateCode\": \"ORDER_CONFIRMATION\",\n  \"variables\": {\n    \"customerName\": \"João Silva\",\n    \"orderId\": \"12345\",\n    \"totalAmount\": \"150.00\"\n  }\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
             }
           }
         },
@@ -2362,43 +2288,6 @@
           }
         },
         {
-          "name": "Get Template History",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "X-Client-ID",
-                "value": "demo-client",
-                "disabled": false,
-                "type": "default"
-              }
-            ],
-            "auth": {
-              "type": "noauth"
-            },
-            "description": "",
-            "url": {
-              "raw": "http://localhost:8085/templates/ORDER_CONFIRMATION/history?channel=EMAIL",
-              "protocol": "http",
-              "host": [
-                "localhost:8085"
-              ],
-              "path": [
-                "templates",
-                "ORDER_CONFIRMATION",
-                "history"
-              ],
-              "query": [
-                {
-                  "key": "channel",
-                  "value": "EMAIL"
-                }
-              ],
-              "variable": []
-            }
-          }
-        },
-        {
           "name": "Prometheus Metrics",
           "request": {
             "method": "GET",
@@ -2421,28 +2310,150 @@
               "variable": []
             }
           }
+        },
+        {
+          "name": "Render Template",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://localhost:8085/internal/v1/templates/render",
+              "protocol": "http",
+              "host": [
+                "localhost:8085"
+              ],
+              "path": [
+                "internal",
+                "v1",
+                "templates",
+                "render"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clientId\": \"demo-client\",\n  \"channel\": \"EMAIL\",\n  \"templateCode\": \"ORDER_CONFIRMATION\",\n  \"variables\": {\n    \"customerName\": \"João Silva\",\n    \"orderId\": \"12345\",\n    \"totalAmount\": \"150.00\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Update Template",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-Client-ID",
+                "value": "demo-client",
+                "disabled": false,
+                "type": "default"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://localhost:8085/templates/ORDER_CONFIRMATION?channel=EMAIL",
+              "protocol": "http",
+              "host": [
+                "localhost:8085"
+              ],
+              "path": [
+                "templates",
+                "ORDER_CONFIRMATION"
+              ],
+              "query": [
+                {
+                  "key": "channel",
+                  "value": "EMAIL"
+                }
+              ],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"c82988b2-8def-4f3f-ac3a-6465bb626cac\",\n  \"clientId\": \"demo-client\",\n  \"channel\": \"EMAIL\",\n  \"templateCode\": \"ORDER_CONFIRMATION\",\n  \"version\": 2,\n  \"content\": \"Olá {{customerName}}! 🎉\\n\\nSeu pedido #{{orderId}} foi confirmado com sucesso!\\n\\nValor: R$ {{totalAmount}}\\n\\nAgradecemos sua compra!\",\n  \"subject\": \"✅ Pedido #{{orderId}} confirmado\",\n  \"variables\": [\n    \"totalAmount\",\n    \"orderId\",\n    \"customerName\"\n  ],\n  \"active\": true,\n  \"createdAt\": null,\n  \"updatedAt\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "wiremock",
+      "item": [
+        {
+          "name": "push",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://localhost:8080/email/primary/send",
+              "protocol": "http",
+              "host": [
+                "localhost:8080"
+              ],
+              "path": [
+                "email",
+                "primary",
+                "send"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"idempotencyKey\": \"test-email-009\",\n    \"clientId\": \"demo-client\",\n    \"channel\": \"EMAIL\",\n    \"recipient\": \"sada12312dfaf!@SAF3231ad\",\n    \"subject\": \"Welcome to our platform!\",\n    \"content\": \"Hello! This is a test email notification.\",\n    \"priority\": \"MEDIUM\",\n    \"maxRetries\": 3\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
         }
       ]
     }
   ],
   "variable": [
     {
+      "key": "notificationId",
+      "value": "",
+      "type": "default"
+    },
+    {
       "key": "access_token",
-      "value": "",
-      "type": "default"
-    },
-    {
-      "key": "notification_host",
-      "value": "",
-      "type": "default"
-    },
-    {
-      "key": "base_url",
-      "value": "",
-      "type": "default"
-    },
-    {
-      "key": "$randomInt",
       "value": "",
       "type": "default"
     },
@@ -2452,22 +2463,7 @@
       "type": "default"
     },
     {
-      "key": "quota_host",
-      "value": "",
-      "type": "default"
-    },
-    {
       "key": "template_host",
-      "value": "",
-      "type": "default"
-    },
-    {
-      "key": "orderId",
-      "value": "",
-      "type": "default"
-    },
-    {
-      "key": "deliveryTime",
       "value": "",
       "type": "default"
     },
@@ -2477,7 +2473,32 @@
       "type": "default"
     },
     {
+      "key": "orderId",
+      "value": "",
+      "type": "default"
+    },
+    {
       "key": "totalAmount",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "notification_host",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "$randomInt",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "quota_host",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "base_url",
       "value": "",
       "type": "default"
     }
