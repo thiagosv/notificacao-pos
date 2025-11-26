@@ -16,12 +16,7 @@ public class AuditNotificationService {
 
     public void process(NotificationDto event, String topic, Long timestamp, String message) {
         log.info("Processing notification from topic={}", topic);
-
-        try {
-            repository.save(NotificationMapper.of(event, topic, timestamp, message));
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to send email notification", e);
-        }
+        repository.save(NotificationMapper.of(event, topic, timestamp, message));
     }
 }
 

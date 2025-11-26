@@ -49,16 +49,11 @@ public class NotificationSummaryService {
     private TimelineEventDto buildTimelineEvent(Notification notification) {
         try {
             JsonNode payloadNode = objectMapper.readTree(notification.getPayload());
-
-            String provider = payloadNode.has("provider") ? payloadNode.get("provider").asText() : null;
-            Double cost = payloadNode.has("cost") ? payloadNode.get("cost").asDouble() : null;
-
             return TimelineEventDto.builder()
                     .event(notification.getNotificationStatus())
                     .timestamp(notification.getTimestamp())
                     .version(notification.getVersion())
-                    .provider(provider)
-                    .cost(cost)
+                    .payload(payloadNode)
                     .build();
         } catch (Exception e) {
             log.error("Error parsing payload for notification {}: {}", notification.getId(), e.getMessage());

@@ -26,7 +26,7 @@ public interface NotificationMapper {
             case "notification.created" -> NotificationStatus.CREATED;
             case "notification.sent" -> NotificationStatus.SENT;
             case "notification.failed" -> NotificationStatus.RETRYING;
-            case "notification.dlq" -> NotificationStatus.FAILED;
+            case "notification.failed.dlq" -> NotificationStatus.FAILED;
             default -> throw new IllegalArgumentException("Unknown topic: " + topic);
         };
     }
