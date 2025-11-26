@@ -11,7 +11,7 @@ spring:
 
   # Database Configuration
   datasource:
-    url: jdbc:postgresql://${POSTGRESQL_HOST:localhost}:5432/template_db
+    url: jdbc:postgresql://${POSTGRESQL_HOST:localhost}:5432/${POSTGRESQL_DB:template_db}
     username: ${POSTGRESQL_USER:template}
     password: ${POSTGRESQL_PASS:template123}
     driver-class-name: org.postgresql.Driver

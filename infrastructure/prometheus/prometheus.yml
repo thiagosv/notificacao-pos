@@ -39,3 +39,8 @@ scrape_configs:
     static_configs:
       - targets: ['audit-service:8080']
     metrics_path: '/actuator/prometheus'
+
+  - job_name: 'template-service'
+    static_configs:
+      - targets: ['template-service:8080']
+    metrics_path: '/actuator/prometheus'

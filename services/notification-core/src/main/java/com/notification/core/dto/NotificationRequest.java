@@ -1,15 +1,19 @@
 package com.notification.core.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.notification.core.model.Channel;
 import com.notification.core.model.Priority;
 import jakarta.validation.constraints.*;
 import lombok.*;
+
+import java.util.Map;
 
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class NotificationRequest {
     
     @NotBlank(message = "Idempotency key is required")
@@ -27,12 +31,11 @@ public class NotificationRequest {
     @Size(max = 255, message = "Recipient must be less than 255 characters")
     private String recipient;
 
-    @NotBlank(message = "Subject is required")
-    @Size(max = 500, message = "Subject must be less than 500 characters")
-    private String subject;
+    @NotBlank
+    private String templateCode;
 
-    @NotBlank(message = "Content is required")
-    private String content;
+    @NotEmpty
+    private Map<String, String> variables;
 
     @Builder.Default
     private Priority priority = Priority.MEDIUM;

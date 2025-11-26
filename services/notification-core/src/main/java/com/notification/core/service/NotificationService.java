@@ -2,6 +2,7 @@ package com.notification.core.service;
 
 import com.notification.core.dto.NotificationRequest;
 import com.notification.core.dto.NotificationSentEvent;
+import com.notification.core.dto.RenderTemplateResponse;
 import com.notification.core.exception.NotificationNotFoundException;
 import com.notification.core.metrics.MetricsService;
 import com.notification.core.model.Notification;
@@ -33,7 +34,7 @@ public class NotificationService {
      * Create a new notification
      */
     @Transactional
-    public Notification createNotification(NotificationRequest request) {
+    public Notification createNotification(NotificationRequest request, RenderTemplateResponse template) {
         log.info("Creating notification: clientId={}, channel={}, idempotencyKey={}",
                 request.getClientId(), request.getChannel(), request.getIdempotencyKey());
 
@@ -42,8 +43,11 @@ public class NotificationService {
                 .idempotencyKey(request.getIdempotencyKey())
                 .channel(request.getChannel())
                 .recipient(request.getRecipient())
-                .subject(request.getSubject())
-                .content(request.getContent())
+                .subject(template.getSubject())
+                .content(template.getContent())
+                .templateCode(request.getTemplateCode())
+                .templateId(template.getTemplateId())
+                .templateVersion(template.getTemplateVersion())
                 .status(NotificationStatus.PENDING)
                 .priority(request.getPriority())
                 .retryCount(0)

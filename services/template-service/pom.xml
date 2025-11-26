@@ -71,6 +71,12 @@
             <version>0.9.14</version>
         </dependency>
 
+        <!-- Jackson JSR310 for Java 8 Date/Time support -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+
         <!-- Actuator -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

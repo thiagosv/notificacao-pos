@@ -92,38 +92,33 @@ const pushTokens = [
   'token_QQQQrrrrSSSSttttt5555',
 ];
 
-const emailSubjects = [
-  'Welcome to our platform!',
-  'Your order has been confirmed',
-  'Password reset request',
-  'New message received',
-  'Account verification',
-  'Special offer just for you!',
+// Template codes por canal
+const templateCodes = {
+  EMAIL: ['ORDER_CONFIRMATION'],
+  SMS: ['DELIVERY_NOTIFICATION'],
+  PUSH: ['WELCOME_MESSAGE']
+};
+
+// Nomes de usuários para variáveis
+const userNames = [
+  'João Silva',
+  'Maria Santos',
+  'Pedro Oliveira',
+  'Ana Costa',
+  'Carlos Souza',
+  'Fernanda Lima',
+  'Roberto Alves',
+  'Juliana Rocha'
 ];
 
-const emailContents = [
-  'Hello! This is a test email notification with important information.',
-  'Thank you for your purchase. Your order will be delivered soon.',
-  'You requested a password reset. Click the link to proceed.',
-  'You have received a new message. Log in to view it.',
-  'Please verify your account by clicking the verification link.',
-  'Don\'t miss our exclusive offer! Limited time only.',
-];
-
-const smsContents = [
-  'Your verification code is: 123456',
-  'Hello! Your order has been shipped.',
-  'Reminder: Your appointment is tomorrow at 10am',
-  'Your payment was successfully processed',
-  'Welcome! Thanks for joining us.',
-];
-
-const pushContents = [
-  'Hello! This is a test push notification.',
-  'You have a new notification waiting for you.',
-  'Breaking news: Check out what\'s new!',
-  'Your request has been completed successfully.',
-  'Reminder: Don\'t forget to check your messages.',
+// Produtos para variáveis
+const products = [
+  'Smartphone XYZ',
+  'Laptop Pro 15',
+  'Headphone Premium',
+  'Smart Watch',
+  'Tablet Ultra',
+  'Câmera Digital'
 ];
 
 const priorities = ['LOW', 'MEDIUM', 'HIGH'];
@@ -152,25 +147,41 @@ function generateRecipient(channel) {
   }
 }
 
-// Função para gerar subject baseado no canal
-function generateSubject(channel) {
-  if (channel === 'EMAIL') {
-    return randomChoice(emailSubjects);
-  }
-  return null; // SMS e PUSH não usam subject
+// Função para gerar template code baseado no canal
+function generateTemplateCode(channel) {
+  const templates = templateCodes[channel];
+  return randomChoice(templates);
 }
 
-// Função para gerar content baseado no canal
-function generateContent(channel) {
-  switch (channel) {
-    case 'SMS':
-      return randomChoice(smsContents);
-    case 'EMAIL':
-      return randomChoice(emailContents);
-    case 'PUSH':
-      return randomChoice(pushContents);
+// Função para gerar variáveis do template baseado no templateCode
+function generateVariables(templateCode) {
+  switch (templateCode) {
+    case 'ORDER_CONFIRMATION':
+      // Variáveis: customerName, orderId
+      return {
+        customerName: randomChoice(userNames),
+        orderId: `ORD-${randomInt(10000, 99999)}`
+      };
+
+    case 'DELIVERY_NOTIFICATION':
+      // Variáveis: orderId, deliveryTime
+      return {
+        orderId: `ORD-${randomInt(10000, 99999)}`,
+        deliveryTime: `${randomInt(14, 18)}:${randomInt(0, 59).toString().padStart(2, '0')}`
+      };
+
+    case 'WELCOME_MESSAGE':
+      // Variáveis: userName
+      return {
+        userName: randomChoice(userNames)
+      };
+
     default:
-      return 'Default notification content';
+      // Fallback genérico
+      return {
+        userName: randomChoice(userNames),
+        orderId: `ORD-${randomInt(10000, 99999)}`
+      };
   }
 }
 
@@ -179,20 +190,19 @@ function generateNotificationPayload() {
   const channel = randomChoice(channels);
   const timestamp = Date.now();
   const randomId = randomInt(100000, 999999);
+  const templateCode = generateTemplateCode(channel);
 
   const payload = {
     idempotencyKey: `perf-test-${channel.toLowerCase()}-${timestamp}-${randomId}`,
     clientId: 'demo-client',
     channel: channel,
     recipient: generateRecipient(channel),
-    content: generateContent(channel),
+    templateCode: templateCode,
+    variables: generateVariables(templateCode),
     priority: randomChoice(priorities),
     maxRetries: randomInt(1, 5),
   };
 
-  // Sempre adiciona subject (obrigatório pela API)
-  const subject = generateSubject(channel);
-  payload.subject = subject || `Notification via ${channel}`;
 
   return payload;
 }

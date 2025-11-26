@@ -7,6 +7,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "notifications", indexes = {
@@ -14,7 +15,8 @@ import java.time.LocalDateTime;
         @Index(name = "idx_notification_status", columnList = "status"),
         @Index(name = "idx_notification_channel", columnList = "channel"),
         @Index(name = "idx_notification_created_at", columnList = "created_at"),
-        @Index(name = "idx_notification_idempotency_key", columnList = "idempotency_key", unique = true)
+        @Index(name = "idx_notification_idempotency_key", columnList = "idempotency_key", unique = true),
+        @Index(name = "idx_notifications_template_id", columnList = "template_id")
 })
 @Getter
 @Setter
@@ -41,11 +43,20 @@ public class Notification {
     @Column(nullable = false)
     private String recipient;
 
-    @Column(nullable = false)
+    @Column
     private String subject;
 
     @Column(nullable = false)
     private String content;
+
+    @Column(name = "template_code")
+    private String templateCode;
+
+    @Column(name = "template_id")
+    private UUID templateId;
+
+    @Column(name = "template_version")
+    private Integer templateVersion;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

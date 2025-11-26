@@ -71,15 +71,17 @@ mvn spring-boot:run -Dspring-boot.run.profiles=dev
 
 ### Endpoints Principais
 
-| Serviço | URL | Porta | Health Check |
-|---------|-----|-------|--------------|
-| API Gateway | http://localhost:8081 | 8081 | /actuator/health |
-| Notification Core | http://localhost:8082 | 8082 | /actuator/health |
-| Quota Service | http://localhost:8083 | 8083 | /actuator/health |
-| Kafka UI | http://localhost:8888 | 8888 | - |
-| Prometheus | http://localhost:9090 | 9090 | - |
-| Grafana | http://localhost:3000 | 3000 | - |
-| WireMock (Mocks) | http://localhost:8080 | 8080 | /__admin |
+| Serviço           | URL                   | Porta | Health Check |
+|-------------------|-----------------------|-------|--------------|
+| API Gateway       | http://localhost:8081 | 8081  | /actuator/health |
+| Notification Core | http://localhost:8082 | 8082  | /actuator/health |
+| Quota Service     | http://localhost:8083 | 8083  | /actuator/health |
+| Audit Service     | http://localhost:8084 | 8084  | /actuator/health |
+| Template Service  | http://localhost:8085 | 8085  | /actuator/health |
+| Kafka UI          | http://localhost:8888 | 8888  | - |
+| Prometheus        | http://localhost:9090 | 9090  | - |
+| Grafana           | http://localhost:3000 | 3000  | - |
+| WireMock (Mocks)  | http://localhost:8080 | 8080  | /__admin |
 
 ### Testando a API
 
@@ -119,6 +121,7 @@ notificacao-pos/
 │   ├── provider-email/           # Consumer para Email
 │   ├── provider-sms/             # Consumer para SMS
 │   └── audit-service/            # Event Sourcing e Auditoria
+│   └── template-service/         # Template das notificações
 ├── infrastructure/
 │   ├── docker/                   # Configurações de containers
 │   ├── grafana/                  # Dashboards e provisioning

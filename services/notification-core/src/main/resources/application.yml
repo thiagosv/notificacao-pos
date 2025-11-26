@@ -75,6 +75,9 @@ kafka:
 quota-service:
   url: ${QUOTA_SERVICE_URL:http://localhost:8083}
   timeout: 5000
+template-service:
+  url: ${TEMPLATE_SERVICE_URL:http://localhost:8085}
+  timeout: 5000
 
 # Idempotency Configuration
 idempotency:

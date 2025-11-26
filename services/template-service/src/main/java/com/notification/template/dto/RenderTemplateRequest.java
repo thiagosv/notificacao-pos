@@ -1,5 +1,6 @@
 package com.notification.template.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.notification.template.model.Channel;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -13,6 +14,7 @@ import java.util.Map;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class RenderTemplateRequest {
 
     @NotBlank(message = "Client ID is required")

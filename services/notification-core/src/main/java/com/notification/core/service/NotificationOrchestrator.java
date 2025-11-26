@@ -3,6 +3,7 @@ package com.notification.core.service;
 import com.notification.core.dto.NotificationEvent;
 import com.notification.core.dto.NotificationRequest;
 import com.notification.core.dto.NotificationResponse;
+import com.notification.core.dto.RenderTemplateResponse;
 import com.notification.core.exception.QuotaExceededException;
 import com.notification.core.model.Notification;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ public class NotificationOrchestrator {
 
     private final IdempotencyService idempotencyService;
     private final QuotaValidationService quotaValidationService;
+    private final TemplateService templateService;
     private final NotificationService notificationService;
     private final KafkaTemplate<String, NotificationEvent> kafkaTemplate;
 
@@ -60,7 +62,8 @@ public class NotificationOrchestrator {
             );
         }
 
-        Notification notification = notificationService.createNotification(request);
+        RenderTemplateResponse template = templateService.renderTemplate(request);
+        Notification notification = notificationService.createNotification(request, template);
 
         idempotencyService.register(request.getIdempotencyKey(), notification.getId());
 

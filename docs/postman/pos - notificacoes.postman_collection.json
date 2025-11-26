@@ -126,14 +126,14 @@
             },
             "description": "",
             "url": {
-              "raw": "localhost:8082/notifications/392d3db4-a480-439b-bb71-cc29974fc5c3",
+              "raw": "{{base_url}}/notifications/aa8279b9-bad7-4fbe-bc3c-e0ab7e582ff6",
               "protocol": "",
               "host": [
-                "localhost:8082"
+                "{{base_url}}"
               ],
               "path": [
                 "notifications",
-                "392d3db4-a480-439b-bb71-cc29974fc5c3"
+                "aa8279b9-bad7-4fbe-bc3c-e0ab7e582ff6"
               ],
               "query": [],
               "variable": []
@@ -150,10 +150,10 @@
             },
             "description": "",
             "url": {
-              "raw": "http://localhost:8082/actuator/health",
-              "protocol": "http",
+              "raw": "{{base_url}}/actuator/health",
+              "protocol": "",
               "host": [
-                "localhost:8082"
+                "{{base_url}}"
               ],
               "path": [
                 "actuator",
@@ -181,10 +181,10 @@
             },
             "description": "",
             "url": {
-              "raw": "http://localhost:8082/notifications/send",
-              "protocol": "http",
+              "raw": "{{base_url}}/notifications/send",
+              "protocol": "",
               "host": [
-                "localhost:8082"
+                "{{base_url}}"
               ],
               "path": [
                 "notifications",
@@ -195,7 +195,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"idempotencyKey\": \"test-email-{{$randomInt}}\",\n    \"clientId\": \"demo-client\",\n    \"channel\": \"EMAIL\",\n    \"recipient\": \"teste@email.com\",\n    \"subject\": \"Welcome to our platform!\",\n    \"content\": \"Hello! This is a test email notification.\",\n    \"priority\": \"MEDIUM\",\n    \"maxRetries\": 3\n  }",
+              "raw": "{\n    \"idempotencyKey\": \"test-email-{{$randomInt}}\",\n    \"clientId\": \"demo-client\",\n    \"channel\": \"EMAIL\",\n    \"recipient\": \"teste@email.com\",\n    \"templateCode\": \"ORDER_CONFIRMATION\",\n    \"variables\": {\n      \"customerName\": \"João Silva\",\n      \"orderId\": \"12345\",\n      \"totalAmount\": \"150.00\"\n    },\n    \"priority\": \"MEDIUM\",\n    \"maxRetries\": 3\n  }",
               "options": {
                 "raw": {
                   "language": "json"
@@ -570,7 +570,7 @@
                     },
                     "body": {
                       "mode": "raw",
-                      "raw": "{\n    \"idempotencyKey\": \"test-email-{{$randomInt}}\",\n    \"clientId\": \"demo-client\",\n    \"channel\": \"EMAIL\",\n    \"recipient\": \"51999999999\",\n    \"subject\": \"Welcome to our platform!\",\n    \"content\": \"Hello! This is a test email notification.\",\n    \"priority\": \"MEDIUM\",\n    \"maxRetries\": 3\n  }",
+                      "raw": "{\n    \"idempotencyKey\": \"test-email-{{$randomInt}}\",\n    \"clientId\": \"demo-client\",\n    \"channel\": \"SMS\",\n    \"recipient\": \"teste@email.com\",\n    \"templateCode\": \"DELIVERY_NOTIFICATION\",\n    \"variables\": {\n      \"orderId\": \"12345\",\n      \"deliveryTime\": 150.0\n    },\n    \"priority\": \"MEDIUM\",\n    \"maxRetries\": 3\n  }",
                       "options": {
                         "raw": {
                           "language": "json"
@@ -691,7 +691,7 @@
                         },
                         "description": "",
                         "url": {
-                          "raw": "{{quota_host}}/admin/quotas/:clientId/:canal?newTotalQuota=1000",
+                          "raw": "{{quota_host}}/admin/quotas/:clientId/:canal?newTotalQuota=200000",
                           "protocol": "",
                           "host": [
                             "{{quota_host}}"
@@ -700,12 +700,12 @@
                             "admin",
                             "quotas",
                             ":clientId",
-                            ":canal?newTotalQuota=1000"
+                            ":canal?newTotalQuota=200000"
                           ],
                           "query": [
                             {
                               "key": "newTotalQuota",
-                              "value": "1000"
+                              "value": "200000"
                             }
                           ],
                           "variable": [
@@ -715,7 +715,7 @@
                             },
                             {
                               "key": "canal",
-                              "value": "EMAIL"
+                              "value": "SMS"
                             }
                           ]
                         },
@@ -1119,19 +1119,19 @@
                     },
                     "description": "",
                     "url": {
-                      "raw": "{{template_host}}/templates/ORDER_CONFIRMATION?channel=EMAIL",
+                      "raw": "{{template_host}}/templates/DELIVERY_NOTIFICATION?channel=SMS",
                       "protocol": "",
                       "host": [
                         "{{template_host}}"
                       ],
                       "path": [
                         "templates",
-                        "ORDER_CONFIRMATION?channel=EMAIL"
+                        "DELIVERY_NOTIFICATION?channel=SMS"
                       ],
                       "query": [
                         {
                           "key": "channel",
-                          "value": "EMAIL"
+                          "value": "SMS"
                         }
                       ],
                       "variable": []
@@ -1347,7 +1347,7 @@
                     },
                     "body": {
                       "mode": "raw",
-                      "raw": "{\n  \"id\": \"c82988b2-8def-4f3f-ac3a-6465bb626cac\",\n  \"clientId\": \"demo-client\",\n  \"channel\": \"EMAIL\",\n  \"templateCode\": \"ORDER_CONFIRMATION\",\n  \"version\": 2,\n  \"content\": \"Olá {{customerName}}! 🎉\\n\\nSeu pedido #{{orderId}} foi confirmado com sucesso!\\n\\nValor: R$ {{totalAmount}}\\n\\nAgradecemos sua compra.\",\n  \"subject\": \"✅ Pedido #{{orderId}} confirmado\",\n  \"variables\": [\n    \"totalAmount\",\n    \"orderId\",\n    \"customerName\"\n  ],\n  \"active\": true,\n  \"createdAt\": null,\n  \"updatedAt\": null\n}",
+                      "raw": "{\n  \"id\": \"c82988b2-8def-4f3f-ac3a-6465bb626cac\",\n  \"clientId\": \"demo-client\",\n  \"channel\": \"EMAIL\",\n  \"templateCode\": \"ORDER_CONFIRMATION\",\n  \"version\": 2,\n  \"content\": \"Olá {{customerName}}, seu pedido #{{orderId}} foi confirmado com sucesso!\",\n  \"subject\": \"✅ Pedido #{{orderId}} confirmado\",\n  \"variables\": [\n    \"orderId\",\n    \"customerName\"\n  ],\n  \"active\": true,\n  \"createdAt\": null,\n  \"updatedAt\": null\n}",
                       "options": {
                         "raw": {
                           "language": "json"
@@ -1416,7 +1416,7 @@
                     },
                     "body": {
                       "mode": "raw",
-                      "raw": "{\n  \"templateCode\": \"ORDER_CONFIRMATION\",\n  \"channel\": \"EMAIL\",\n  \"content\": \"Olá {{customerName}},\\n\\nSeu pedido #{{orderId}} foi confirmado com sucesso!\\n\\nTotal: R$ {{totalAmount}}\\n\\nObrigado pela preferência!\",\n  \"subject\": \"✅ Pedido #{{orderId}} confirmado\",\n  \"variables\": [\"customerName\", \"orderId\", \"totalAmount\"]\n}",
+                      "raw": "{\n  \"templateCode\": \"ORDER_CANCELLED\",\n  \"channel\": \"EMAIL\",\n  \"content\": \"Olá {{customerName}},\\n\\nSeu pedido #{{orderId}} foi cancelado com sucesso!\\n\\nTotal: R$ {{totalAmount}}\\n\\nObrigado pela preferência!\",\n  \"subject\": \"✅ Pedido #{{orderId}} cancelado\",\n  \"variables\": [\"customerName\", \"orderId\", \"totalAmount\"]\n}",
                       "options": {
                         "raw": {
                           "language": "json"
@@ -2258,7 +2258,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"id\": \"c82988b2-8def-4f3f-ac3a-6465bb626cac\",\n  \"clientId\": \"demo-client\",\n  \"channel\": \"EMAIL\",\n  \"templateCode\": \"ORDER_CONFIRMATION\",\n  \"version\": 2,\n  \"content\": \"Olá {{customerName}}! 🎉\\n\\nSeu pedido #{{orderId}} foi confirmado com sucesso!\\n\\nValor: R$ {{totalAmount}}\\n\\nAgradecemos sua compra.\",\n  \"subject\": \"✅ Pedido #{{orderId}} confirmado\",\n  \"variables\": [\n    \"totalAmount\",\n    \"orderId\",\n    \"customerName\"\n  ],\n  \"active\": true,\n  \"createdAt\": null,\n  \"updatedAt\": null\n}",
+              "raw": "{\n  \"id\": \"c82988b2-8def-4f3f-ac3a-6465bb626cac\",\n  \"clientId\": \"demo-client\",\n  \"channel\": \"EMAIL\",\n  \"templateCode\": \"ORDER_CONFIRMATION\",\n  \"version\": 2,\n  \"content\": \"Olá {{customerName}}! 🎉\\n\\nSeu pedido #{{orderId}} foi confirmado com sucesso!\\n\\nValor: R$ {{totalAmount}}\\n\\nAgradecemos sua compra!\",\n  \"subject\": \"✅ Pedido #{{orderId}} confirmado\",\n  \"variables\": [\n    \"totalAmount\",\n    \"orderId\",\n    \"customerName\"\n  ],\n  \"active\": true,\n  \"createdAt\": null,\n  \"updatedAt\": null\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2437,6 +2437,11 @@
       "type": "default"
     },
     {
+      "key": "base_url",
+      "value": "",
+      "type": "default"
+    },
+    {
       "key": "$randomInt",
       "value": "",
       "type": "default"
@@ -2457,12 +2462,17 @@
       "type": "default"
     },
     {
-      "key": "customerName",
+      "key": "orderId",
       "value": "",
       "type": "default"
     },
     {
-      "key": "orderId",
+      "key": "deliveryTime",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "customerName",
       "value": "",
       "type": "default"
     },

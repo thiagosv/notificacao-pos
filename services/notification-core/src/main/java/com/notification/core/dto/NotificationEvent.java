@@ -6,6 +6,7 @@ import com.notification.core.model.Priority;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -23,6 +24,7 @@ public class NotificationEvent {
     private Priority priority;
     private String idempotencyKey;
     private LocalDateTime timestamp;
+    private TemplateMetadata template;
 
     public static NotificationEvent of(Notification notification) {
         return NotificationEvent.builder()
@@ -35,7 +37,21 @@ public class NotificationEvent {
                 .priority(notification.getPriority())
                 .idempotencyKey(notification.getIdempotencyKey())
                 .timestamp(LocalDateTime.now())
+                .template(TemplateMetadata.builder()
+                        .code(notification.getTemplateCode())
+                        .id(notification.getTemplateId())
+                        .version(notification.getTemplateVersion())
+                        .build())
                 .build();
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    public static class TemplateMetadata {
+        private String code;
+        private UUID id;
+        private Integer version;
     }
 }
 

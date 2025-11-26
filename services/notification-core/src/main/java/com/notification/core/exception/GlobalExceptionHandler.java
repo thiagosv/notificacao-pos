@@ -77,6 +77,19 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(error);
     }
 
+    @ExceptionHandler(TemplateServiceUnavailableException.class)
+    public ResponseEntity<ErrorResponse> handleTemplateServiceUnavailable(TemplateServiceUnavailableException ex) {
+        log.error("Template service unavailable: {}", ex.getMessage());
+
+        ErrorResponse error = ErrorResponse.builder()
+                .error("SERVICE_UNAVAILABLE")
+                .message("Template service is temporarily unavailable. Please try again later.")
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(error);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException ex, WebRequest request) {
         Map<String, String> errors = new HashMap<>();
@@ -95,6 +108,19 @@ public class GlobalExceptionHandler {
                 .message("Invalid request parameters")
                 .path(request.getDescription(false).replace("uri=", ""))
                 .validationErrors(errors)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(TemplateServiceException.class)
+    public ResponseEntity<ErrorResponse> handleTemplateServiceException(TemplateServiceException ex) {
+        log.error("Template service error: {}", ex.getMessage());
+
+        ErrorResponse error = ErrorResponse.builder()
+                .error("TEMPLATE_SERVICE_ERROR")
+                .message(ex.getMessage())
+                .timestamp(LocalDateTime.now())
                 .build();
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);

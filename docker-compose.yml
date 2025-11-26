@@ -270,6 +270,7 @@ services:
       REDIS_PORT: 6379
       KAFKA_BOOTSTRAP: kafka:9092
       QUOTA_SERVICE_URL: http://quota-service:8080
+      TEMPLATE_SERVICE_URL: http://template-service:8080
     networks:
       - notification-network
     depends_on:
