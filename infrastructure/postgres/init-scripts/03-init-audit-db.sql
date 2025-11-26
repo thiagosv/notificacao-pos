@@ -1,0 +1,14 @@
+-- Create audit database and user
+CREATE DATABASE audit_db;
+CREATE USER audit WITH PASSWORD 'audit123';
+GRANT ALL PRIVILEGES ON DATABASE audit_db TO audit;
+ALTER DATABASE audit_db OWNER TO audit;
+
+-- Connect to audit database and grant schema privileges
+\c audit_db
+GRANT ALL ON SCHEMA public TO audit;
+GRANT ALL PRIVILEGES ON SCHEMA public TO audit;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO audit;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO audit;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO audit;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO audit;

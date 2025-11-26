@@ -11,7 +11,7 @@ spring:
 
   # Database Configuration
   datasource:
-    url: jdbc:postgresql://${POSTGRESQL_HOST:localhost}:5432/notification_db
+    url: jdbc:postgresql://${POSTGRESQL_HOST:localhost}:5432/${POSTGRESQL_DB:quota_db}
     username: ${POSTGRESQL_USER:notification}
     password: ${POSTGRESQL_PASS:notification123}
     driver-class-name: org.postgresql.Driver

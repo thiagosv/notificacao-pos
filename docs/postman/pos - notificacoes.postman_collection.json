@@ -639,6 +639,101 @@
 									}
 								}
 							]
+						},
+						{
+							"name": "auditoria",
+							"item": [
+								{
+									"name": "health",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{audit_host}}/actuator/health",
+											"host": [
+												"{{audit_host}}"
+											],
+											"path": [
+												"actuator",
+												"health"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "by id",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{audit_host}}/audit/notifications/969e97a1-4b53-4edd-b6d5-a7bdb792db07",
+											"host": [
+												"{{audit_host}}"
+											],
+											"path": [
+												"audit",
+												"notifications",
+												"969e97a1-4b53-4edd-b6d5-a7bdb792db07"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"auth": {
+								"type": "bearer",
+								"bearer": [
+									{
+										"key": "token",
+										"value": "{{access_token}}",
+										"type": "string"
+									}
+								]
+							},
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {},
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: 'http://localhost:8081/api/auth/login',\r",
+											"    method: 'POST',\r",
+											"    header: 'Content-Type: application/json',\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({ clientId: 'demo-client', password: 'demo123' })\r",
+											"    }\r",
+											"}, function (err, response) {\r",
+											"    if (err) {\r",
+											"        console.error(err);\r",
+											"    } else {\r",
+											"        if (response.code === 200) {\r",
+											"            var responseBody = response.json();\r",
+											"            pm.collectionVariables.set('access_token', responseBody.token);\r",
+											"        } else {\r",
+											"            console.error('Failed to login. Response code:', response.code);\r",
+											"        }\r",
+											"    }\r",
+											"});"
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {},
+										"exec": [
+											""
+										]
+									}
+								}
+							]
 						}
 					]
 				},
@@ -1354,6 +1449,103 @@
 							"path": [
 								"notifications",
 								"stats"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{access_token}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {},
+						"exec": [
+							"pm.sendRequest({\r",
+							"    url: 'http://localhost:8081/api/auth/login',\r",
+							"    method: 'POST',\r",
+							"    header: 'Content-Type: application/json',\r",
+							"    body: {\r",
+							"        mode: 'raw',\r",
+							"        raw: JSON.stringify({ clientId: 'demo-client', password: 'demo123' })\r",
+							"    }\r",
+							"}, function (err, response) {\r",
+							"    if (err) {\r",
+							"        console.error(err);\r",
+							"    } else {\r",
+							"        if (response.code === 200) {\r",
+							"            var responseBody = response.json();\r",
+							"            pm.collectionVariables.set('access_token', responseBody.token);\r",
+							"        } else {\r",
+							"            console.error('Failed to login. Response code:', response.code);\r",
+							"        }\r",
+							"    }\r",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "audit",
+			"item": [
+				{
+					"name": "health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8090/actuator/health",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"actuator",
+								"health"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "stats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8090/audit/notifications/5449f86c-6d46-4fc6-89fb-642102794031",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"audit",
+								"notifications",
+								"5449f86c-6d46-4fc6-89fb-642102794031"
 							]
 						}
 					},

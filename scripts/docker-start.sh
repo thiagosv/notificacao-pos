@@ -30,8 +30,9 @@ INFRA_CONTAINERS=(
 )
 
 SERVICE_CONTAINERS=(
-  quota-service
   notification-core
+  quota-service
+  template-service
   provider-push
   provider-email
   provider-sms
@@ -140,6 +141,7 @@ function stop_all() {
   $DC down
   docker volume prune -f >/dev/null 2>&1 || true
   docker volume rm -f notificacao-pos_kafka-data
+  docker volume rm -f notificacao-pos_postgres-data
 }
 
 function status() {

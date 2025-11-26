@@ -40,6 +40,7 @@
         <module>services/provider-email</module>
         <module>services/provider-sms</module>
         <module>services/audit-service</module>
+        <module>services/template-service</module>
     </modules>
 
     <dependencyManagement>

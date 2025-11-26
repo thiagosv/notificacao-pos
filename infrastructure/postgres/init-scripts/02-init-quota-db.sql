@@ -1,0 +1,15 @@
+-- Create quota database and user
+CREATE DATABASE quota_db;
+CREATE USER quota WITH PASSWORD 'quota123';
+GRANT ALL PRIVILEGES ON DATABASE quota_db TO quota;
+ALTER DATABASE quota_db OWNER TO quota;
+
+-- Connect to quota database and grant schema privileges
+\c quota_db
+GRANT ALL ON SCHEMA public TO quota;
+GRANT ALL PRIVILEGES ON SCHEMA public TO quota;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO quota;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO quota;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO quota;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO quota;
+
